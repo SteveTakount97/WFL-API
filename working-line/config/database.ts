@@ -14,6 +14,11 @@ const dbConfig = defineConfig({
         database: env.get('DB_DATABASE'),
         ssl: { rejectUnauthorized: false } 
       },
+      pool: {
+        min: 7,  
+        max: 10, 
+        acquireTimeoutMillis: 60000 
+      },
       migrations: {
         naturalSort: true,
         paths: ['database/migrations'],
