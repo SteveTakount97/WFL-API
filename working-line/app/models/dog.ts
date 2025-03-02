@@ -13,7 +13,7 @@ export default class Dog extends BaseModel {
   declare familyId: number
 
   @column()
-  declare name: string 
+  declare nameDog: string 
 
   @column()
   declare breed: string

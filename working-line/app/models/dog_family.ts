@@ -10,6 +10,9 @@ export default class DogFamily extends BaseModel {
   @column()
   declare familyName: string
 
+  @column()
+  declare description: string
+
   // Définition de la relation "DogFamily has many Dogs"
   @hasMany(() => Dog)
   public dogs!: relations.HasMany<typeof Dog> 
