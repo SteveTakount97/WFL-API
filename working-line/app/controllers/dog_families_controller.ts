@@ -1,35 +1,71 @@
-// import type { HttpContext } from '@adonisjs/core/http'
-
 import type { HttpContext } from '@adonisjs/core/http'
-import DogFamily from '#models/dog_family'
+import DogFamilyService from '#services/DogFamilyServices'
 
 export default class DogFamiliesController {
+  private dogFamilyService: DogFamilyService
+
+  // Initialisation de la classe DogFamilyService
+  constructor() {
+    this.dogFamilyService = new DogFamilyService()
+  }
+
+  /**
+   * Récupérer toutes les familles de chiens
+   */
   public async index({ response }: HttpContext) {
-    const families = await DogFamily.all()
-    return response.json(families)
+    try {
+      const families = await this.dogFamilyService.getAllFamilies()
+      return response.json(families)
+    } catch (error) {
+      return response.internalServerError({ message: 'Erreur lors de la récupération des familles', error })
+    }
   }
 
+  /**
+   * Récupérer une famille par son ID
+   */
   public async show({ params, response }: HttpContext) {
-    const family = await DogFamily.findOrFail(params.id)
-    return response.json(family)
+    try {
+      const family = await this.dogFamilyService.getFamilyById(parseInt(params.id))
+      return response.json(family)
+    } catch (error) {
+      return response.notFound({ message: 'Famille non trouvée', error })
+    }
   }
 
-  public async store({ request, response }: HttpContext) {
-    const data = request.only(['parent_id', 'child_id'])
-    const family = await DogFamily.create(data)
-    return response.created(family)
+  /**
+   * Créer une nouvelle famille
+   */
+ /* public async store({ request, response }: HttpContext) {
+    try {
+      const family = await this.dogFamilyService.createFamily(request)
+      return response.created(family)
+    } catch (error) {
+      return response.badRequest({ message: 'Erreur lors de la création de la famille', error })
+    }
   }
 
-  public async update({ params, request, response }: HttpContext) {
-    const family = await DogFamily.findOrFail(params.id)
-    family.merge(request.only(['parent_id', 'child_id']))
-    await family.save()
-    return response.json(family)
+  /**
+   * Mettre à jour une famille
+   */
+  /*public async update({ params, request, response }: HttpContext) {
+    try {
+      const family = await this.dogFamilyService.updateFamily(parseInt(params.id), request)
+      return response.json(family)
+    } catch (error) {
+      return response.badRequest({ message: 'Erreur lors de la mise à jour', error })
+    }
   }
 
+  /**
+   * Supprimer une famille
+   */
   public async destroy({ params, response }: HttpContext) {
-    const family = await DogFamily.findOrFail(params.id)
-    await family.delete()
-    return response.noContent()
+    try {
+      await this.dogFamilyService.deleteFamily(parseInt(params.id))
+      return response.noContent()
+    } catch (error) {
+      return response.notFound({ message: 'Erreur lors de la suppression', error })
+    }
   }
 }

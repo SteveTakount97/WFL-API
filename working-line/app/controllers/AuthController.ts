@@ -1,30 +1,24 @@
-// import type { HttpContext } from '@adonisjs/core/http'
 
-import type { HttpContext } from '@adonisjs/core/http'
-import User from '#models/user'
-import hash from '@adonisjs/core/services/hash'
+
+/*mport { HttpContext } from '@adonisjs/core/http'
+/*import AuthService from '#services/AuthService' 
 
 export default class AuthController {
+  private authService: AuthService
+
+  constructor() {
+    this.authService = new AuthService()
+  }
+
   public async register({ request, response }: HttpContext) {
-    const data = request.only(['email', 'password', 'name'])
-    const user = await User.create(data)
-    return response.created({ user })
-  }
+    const { email, password, name, role } = request.only(['email', 'password', 'name', 'role'])
 
-  public async login({ request, response, auth }: HttpContext) {
-    const { email, password } = request.only(['email', 'password'])
-    const user = await User.findByOrFail('email', email)
-
-    if (!(await hash.verify(user.password, password))) {
-      return response.unauthorized('Invalid credentials')
+    try {
+      // Enregistrer l'utilisateur via le service
+      const user = await this.authService.registerUser({ email, password, name, role })
+      return response.created({ user })
+    } catch (error) {
+      return response.status(500).json({ message: 'Error during registration', error: error.message })
     }
-
-    const token = await auth.use('api').generate(user)
-    return response.json({ token })
   }
-
-  public async logout({ response, auth }: HttpContext) {
-    await auth.use('api').delete()
-    return response.ok({ message: 'Logged out successfully' })
-  }
-}
+} */
