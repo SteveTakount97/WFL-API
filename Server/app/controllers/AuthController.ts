@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import AuthService from '#services/AuthService'
 
+
 export default class AuthController {
   /**
    * @description Permet de s'inscrire depuis le site web ou l'application mobile
