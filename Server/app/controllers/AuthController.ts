@@ -4,7 +4,7 @@ import AuthService from '#services/AuthService'
 
 export default class AuthController {
   /**
-   * @description Permet de s'inscrire depuis le site web ou l'application mobile
+   * @description Permet de s'inscrire depuis le site web 
    * @returns user
    */
   public async register({ request, response, sentry }: HttpContext): Promise<void> {
