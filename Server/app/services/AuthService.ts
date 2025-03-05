@@ -4,19 +4,19 @@ import string from '@adonisjs/core/helpers/string'
 export default class AuthService {
   static async registerUser(data: any) {
     // Vérification de la présence des champs obligatoires
-    if (!data.email || !data.password || !data.full_name || !data.username || !data.role) {
+    if (!data.email || !data.password || !data.first_name || !data.last_name || !data.role) {
       throw new Error('Missing required fields')
     }
 
-    // Vérification de l'existence de l'email et du username
+    // Vérification de l'existence de l'email 
     const existingUser = await User.query()
       .where('email', data.email)
-      .orWhere('username', data.username)
+      .orWhere('first_name', data.first_name)
       .first()
 
     if (existingUser) {
       throw new Error(
-        existingUser.email === data.email ? 'Email already exists' : 'Username already exists'
+        existingUser.email === data.email ? 'Email already exists' : 'first_name already exists'
       )
     }
 
