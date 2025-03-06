@@ -1,6 +1,7 @@
 import Dog from '#models/dog';
 import { DateTime } from 'luxon'
 import { BadRequestException } from '@adonisjs/core/build/standalone';
+import { Exception } from '@adonisjs/core/exceptions';
 
 export default class DogService {
 
@@ -73,5 +74,19 @@ export default class DogService {
 
     // Supprimer le chien
     await dog.delete();
+  }
+  /**
+   * Récupérer un chien par son ID
+   * @param dogId - L'identifiant du chien à récupérer
+   * @returns Dog | null
+   */
+  public async getDogById(dogId: number): Promise<Dog | null> {
+    const dog = await Dog.find(dogId);
+
+    if (!dog) {
+      throw new Exception('Chien non trouvé');
+    }
+
+    return dog;
   }
 }

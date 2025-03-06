@@ -63,4 +63,17 @@ export default class DogController {
       return response.badRequest({ error: error.message });
     }
   }
+  /**
+   * Récupérer les informations d'un chien par son ID
+   */
+  public async show({ params, response }: HttpContext) {
+    try {
+      const dogId = Number(params.id);
+      const dog = await this.dogService.getDogById(dogId);
+
+      return response.ok(dog);
+    } catch (error) {
+      return response.status(error.status || 500).json({ message: error.message });
+    }
+  }
 }

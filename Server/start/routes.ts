@@ -53,6 +53,7 @@ router.group(() => {
   router.post('/admin/dogs', dogsController.store)  
   router.put('/admin/dogs/:id', dogsController.update)  
   router.delete('/admin/dogs/:id', dogsController.destroy)
+  router.get('/admin/dogs/:id', dogsController.show)
 
   // Contacts
   router.post('/contacts', contactsController.store) 
