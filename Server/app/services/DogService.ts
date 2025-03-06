@@ -89,4 +89,11 @@ export default class DogService {
 
     return dog;
   }
+  /**
+   * Récupérer tous les chiens disponibles
+   * @returns Dog[]
+   */
+  public async getAllDogs(): Promise<Dog[]> {
+    return await Dog.all(); // Récupère tous les chiens de la base de données
+  }
 }

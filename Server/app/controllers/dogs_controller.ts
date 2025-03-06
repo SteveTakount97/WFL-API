@@ -63,6 +63,17 @@ export default class DogController {
       return response.badRequest({ error: error.message });
     }
   }
+   /**
+   * Récupérer toutes les informations sur les chiens
+   */
+   public async index({ response }: HttpContext) {
+    try {
+      const dogs = await this.dogService.getAllDogs();
+      return response.ok(dogs); // Retourne la liste des chiens
+    } catch (error) {
+      return response.status(500).json({ message: 'Erreur interne du serveur' });
+    }
+  }
   /**
    * Récupérer les informations d'un chien par son ID
    */
