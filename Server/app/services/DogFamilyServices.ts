@@ -1,102 +1,59 @@
 import DogFamily from '#models/dog_family'
-/*import { schema, rules } from '@adonisjs/validator' */
+import { schema, rules } from '@adonisjs/validator'
 
 export default class DogFamilyService {
   /**
-   * Récupère toutes les familles de chiens
+   * Récupérer toutes les familles de chiens
    */
-  public async getAllFamilies() {
-    try {
-      // Retourne toutes les familles de chiens
-      return await DogFamily.all()
-    } catch (error) {
-      // Gestion des erreurs en cas de problème de récupération
-      throw new Error('Impossible de récupérer les familles de chiens.')
-    }
+  public static async getAllFamilies() {
+    return await DogFamily.all()
   }
 
   /**
-   * Récupère une famille de chiens par son ID
-   * @param id ID de la famille
+   * Récupérer une famille de chien par son ID
    */
-  public async getFamilyById(id: number) {
-    try {
-      // Recherche de la famille par son ID, ou échec si l'ID est introuvable
-      return await DogFamily.findOrFail(id)
-    } catch (error) {
-      // Gestion des erreurs si la famille n'est pas trouvée
-      throw new Error(`La famille avec l'ID ${id} n'a pas été trouvée.`)
-    }
+  public static async getFamilyById(id: number) {
+    return await DogFamily.findOrFail(id)
   }
 
   /**
-   * Crée une nouvelle famille avec validation
-   * @param data Données à valider pour créer la famille
+   * Créer une nouvelle famille de chiens avec validation
    */
-  /* public async createFamily(data: any) {
-    // Définition du schéma de validation des données
+  public static async createFamily(data: any) {
     const dogFamilySchema = schema.create({
-      parent_id: schema.number([rules.exists({ table: 'dogs', column: 'id' })]),
-      child_id: schema.number([rules.exists({ table: 'dogs', column: 'id' })]),
+      familyname: schema.string({}, [rules.unique({ table: 'dogs_family', column: 'familyname' })]),
+      description: schema.string.optional(),
     })
 
-    try {
-      // Validation des données entrantes
-      const payload = await data.validate({ schema: dogFamilySchema })
-      
-      // Création de la famille de chien après validation
-      return await DogFamily.create(payload)
-    } catch (error) {
-      // Gestion des erreurs de validation
-      throw new Error('Les données fournies sont invalides. Vérifiez les parents et enfants.')
-    }
+    const payload = await data.validate({ schema: dogFamilySchema })
+    return await DogFamily.create(payload)
   }
 
   /**
-   * Met à jour une famille existante
-   * @param id ID de la famille à mettre à jour
-   * @param data Données à valider et mettre à jour
+   * Mettre à jour une famille de chiens
    */
- /* public async updateFamily(id: number, data: any) {
-    try {
-      // Recherche de la famille à mettre à jour
-      const family = await DogFamily.findOrFail(id)
+  public static async updateFamily(id: number, data: any) {
+    const family = await DogFamily.findOrFail(id)
 
-      /* Définition du schéma de validation des données
-      const dogFamilySchema = schema.create({
-        parent_id: schema.number.optional([rules.exists({ table: 'dogs', column: 'id' })]),
-        child_id: schema.number.optional([rules.exists({ table: 'dogs', column: 'id' })]),
-      })
+    const dogFamilySchema = schema.create({
+      familyname: schema.string.optional({}, [rules.unique({ table: 'dog_families', column: 'familyName' })]),
+      description: schema.string.optional(),
+    })
 
-      // Validation des données entrantes
-      const payload = await data.validate({ schema: dogFamilySchema })
-      
-      // Mise à jour de la famille avec les nouvelles données validées
-      family.merge(payload)
-      await family.save()
+    const payload = await data.validate({ schema: dogFamilySchema })
 
-      // Retourne la famille mise à jour
-      return family
-    } catch (error) {
-      // Gestion des erreurs si la famille n'est pas trouvée ou si la validation échoue
-      throw new Error(`Impossible de mettre à jour la famille avec l'ID ${id}.`)
-    }
+    family.merge(payload)
+    await family.save()
+
+    return family
   }
 
   /**
-   * Supprime une famille
-   * @param id ID de la famille à supprimer
+   * Supprimer une famille de chiens
    */
-  public async deleteFamily(id: number) {
-    try {
-      // Recherche de la famille à supprimer
-      const family = await DogFamily.findOrFail(id)
-      
-      // Suppression de la famille de chien
-      await family.delete()
-    } catch (error) {
-      // Gestion des erreurs si la famille n'est pas trouvée
-      throw new Error(`Impossible de supprimer la famille avec l'ID ${id}.`)
-    }
+  public static async deleteFamily(id: number) {
+    const family = await DogFamily.findOrFail(id)
+    await family.delete()
+    return { message: 'Famille supprimée avec succès' }
   }
 }

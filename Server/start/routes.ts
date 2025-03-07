@@ -16,6 +16,9 @@ import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './swagger.js'
 import MessagesController from '#controllers/messages_controller'
 import DogFamiliesController from '#controllers/dog_families_controller'
+import AuthMiddleware from '#middleware/auth_middleware'
+import AdminMiddleware from '#middleware/admin_middleware'
+
 
 
 const authController = new AuthController()
@@ -24,6 +27,8 @@ const dogsController = new DogsController()
 const contactsController = new ContactsController()
 const messagesController = new MessagesController()
 const dogFamiliesController = new DogFamiliesController()
+
+
 
 
 // Affichage du fichier swagger.json
@@ -68,11 +73,11 @@ router.group(() => {
   router.delete('/messages/:id', messagesController.destroy) 
 
    // Gestion des familles de chiens
-   router.post('/dog-families', dogFamiliesController.store) 
-   router.get('/dog-families', dogFamiliesController.index) 
-   router.get('/dog-families/:id', dogFamiliesController.show) 
-   router.put('/dog-families/:id', dogFamiliesController.update)
-   router.delete('/dog-families/:id', dogFamiliesController.destroy) 
+   router.post('admin/dog-families', dogFamiliesController.store) 
+   router.get('admin/dog-families', dogFamiliesController.index) 
+   router.get('admin/dog-families/:id', dogFamiliesController.show) 
+   router.put('admin/dog-families/:id', dogFamiliesController.update)
+   router.delete('admin/dog-families/:id', dogFamiliesController.destroy) 
 
 
-}).prefix('/api')
+}).prefix('/api').middleware([new AuthMiddleware().handle, new AdminMiddleware().handle])
