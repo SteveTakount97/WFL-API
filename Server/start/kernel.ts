@@ -10,8 +10,13 @@
 
 import router from '@adonisjs/core/services/router'
 import server from '@adonisjs/core/services/server'
-import '@adonisjs/swagger'
+import setupSwagger from './swagger.js'
 
+
+export const serverMiddleware = [
+  setupSwagger,
+  // Autres middlewares si nécessaire
+]
 
 /**
  * The error handler is used to convert an exception

@@ -31,6 +31,11 @@ const dogFamiliesController = new DogFamiliesController()
 
 
 
+// Route de test pour la racine
+router.get('/', async () => {
+  return 'Bienvenue sur l\'API WFL'
+})
+
 // Affichage du fichier swagger.json
 router.get('/swagger.json', async ({ response }) => {
   return response.json(swaggerSpec)

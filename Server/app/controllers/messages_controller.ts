@@ -13,11 +13,11 @@ export default class MessagesController {
       const messageSchema = schema.create({
         senderId: schema.number([
           rules.required(),
-          rules.exists({ table: 'users', column: 'id' }),
+          rules.requiredIfExists('receiverId'),
         ]),
         receiverId: schema.number([
           rules.required(),
-          rules.exists({ table: 'users', column: 'id' }),
+          rules.requiredIfExists('senderId'),
         ]),
         content: schema.string({ trim: true }, [
           rules.required(),
