@@ -19,10 +19,11 @@ const swaggerDefinition = {
 
 const options = {
   swaggerDefinition,
-  apis: ['app/Controllers/Http/**/*.ts'],
+  apis: ['./app/controllers/*.ts', './start/routes.ts'], 
 }
 
 const specs = swaggerJsdoc(options)
+
 
 export async function setupSwagger(app: Application<ContainerBindings>) {
   try {

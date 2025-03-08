@@ -1,5 +1,3 @@
-// import type { HttpContext } from '@adonisjs/core/http'
-
 import { HttpContext } from '@adonisjs/http-server';
 import DogService from '#services/DogService';
 import { schema, rules } from '@adonisjs/validator';
@@ -11,7 +9,60 @@ export default class DogController {
     this.dogService = new DogService();
   }
 
-  // Ajouter un chien
+  /**
+   * @swagger
+   * /api/dogs:
+   *   post:
+   *     summary: Ajouter un chien
+   *     tags:
+   *       - Dogs
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               nameDog:
+   *                 type: string
+   *                 description: Nom du chien
+   *               breed:
+   *                 type: string
+   *                 description: Race du chien
+   *               age:
+   *                 type: integer
+   *                 description: Âge du chien
+   *               birthday:
+   *                 type: string
+   *                 format: date
+   *                 description: Date de naissance du chien
+   *               gender:
+   *                 type: string
+   *                 description: Sexe du chien
+   *     responses:
+   *       201:
+   *         description: Chien ajouté avec succès
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: integer
+   *                 nameDog:
+   *                   type: string
+   *                 breed:
+   *                   type: string
+   *                 age:
+   *                   type: integer
+   *                 birthday:
+   *                   type: string
+   *                   format: date
+   *                 gender:
+   *                   type: string
+   *       400:
+   *         description: Erreur lors de l'ajout du chien
+   */
   public async store({ request, response }: HttpContext) {
     const dogSchema = schema.create({
       nameDog: schema.string({ trim: true }, [rules.minLength(3)]),
@@ -31,7 +82,64 @@ export default class DogController {
     }
   }
 
-  // Modifier un chien
+  /**
+   * @swagger
+   * /api/dogs/{id}:
+   *   put:
+   *     summary: Modifier un chien
+   *     tags:
+   *       - Dogs
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID du chien à modifier
+   *         schema:
+   *           type: integer
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               nameDog:
+   *                 type: string
+   *               breed:
+   *                 type: string
+   *               age:
+   *                 type: integer
+   *               birthday:
+   *                 type: string
+   *                 format: date
+   *               gender:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: Chien modifié avec succès
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: integer
+   *                 nameDog:
+   *                   type: string
+   *                 breed:
+   *                   type: string
+   *                 age:
+   *                   type: integer
+   *                 birthday:
+   *                   type: string
+   *                   format: date
+   *                 gender:
+   *                   type: string
+   *       404:
+   *         description: Chien non trouvé
+   *       400:
+   *         description: Erreur lors de la modification du chien
+   */
   public async update({ params, request, response }: HttpContext) {
     const dogSchema = schema.create({
       nameDog: schema.string.optional({ trim: true }, [rules.minLength(3)]),
@@ -54,7 +162,26 @@ export default class DogController {
     }
   }
 
-   // Supprimer un chien
+  /**
+   * @swagger
+   * /api/dogs/{id}:
+   *   delete:
+   *     summary: Supprimer un chien
+   *     tags:
+   *       - Dogs
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID du chien à supprimer
+   *         schema:
+   *           type: integer
+   *     responses:
+   *       204:
+   *         description: Chien supprimé avec succès
+   *       400:
+   *         description: Erreur lors de la suppression du chien
+   */
   public async destroy({ params, response }: HttpContext) {
     try {
       await this.dogService.deleteDog(params.id);
@@ -63,10 +190,41 @@ export default class DogController {
       return response.badRequest({ error: error.message });
     }
   }
-   /**
-   * Récupérer toutes les informations sur les chiens
+
+  /**
+   * @swagger
+   * /api/dogs:
+   *   get:
+   *     summary: Récupérer toutes les informations sur les chiens
+   *     tags:
+   *       - Dogs
+   *     responses:
+   *       200:
+   *         description: Liste de tous les chiens
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   id:
+   *                     type: integer
+   *                   nameDog:
+   *                     type: string
+   *                   breed:
+   *                     type: string
+   *                   age:
+   *                     type: integer
+   *                   birthday:
+   *                     type: string
+   *                     format: date
+   *                   gender:
+   *                     type: string
+   *       500:
+   *         description: Erreur interne du serveur
    */
-   public async index({ response }: HttpContext) {
+  public async index({ response }: HttpContext) {
     try {
       const dogs = await this.dogService.getAllDogs();
       return response.ok(dogs); // Retourne la liste des chiens
@@ -74,8 +232,44 @@ export default class DogController {
       return response.status(500).json({ message: 'Erreur interne du serveur' });
     }
   }
+
   /**
-   * Récupérer les informations d'un chien par son ID
+   * @swagger
+   * /api/dogs/{id}:
+   *   get:
+   *     summary: Récupérer les informations d'un chien par son ID
+   *     tags:
+   *       - Dogs
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID du chien
+   *         schema:
+   *           type: integer
+   *     responses:
+   *       200:
+   *         description: Informations sur le chien
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: integer
+   *                 nameDog:
+   *                   type: string
+   *                 breed:
+   *                   type: string
+   *                 age:
+   *                   type: integer
+   *                 birthday:
+   *                   type: string
+   *                   format: date
+   *                 gender:
+   *                   type: string
+   *       404:
+   *         description: Chien introuvable
    */
   public async show({ params, response }: HttpContext) {
     try {

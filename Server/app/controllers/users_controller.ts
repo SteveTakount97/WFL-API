@@ -8,6 +8,78 @@ export default class UsersController {
   constructor() {
     this.userService = new UserService()
   }
+  /**
+   * @swagger
+   * /api/admin/users:
+   *   get:
+   *     summary: Récupère tous les utilisateurs
+   *     tags:
+   *       - Utilisateurs
+   *     responses:
+   *       200:
+   *         description: Liste des utilisateurs
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   id:
+   *                     type: integer
+   *                   username:
+   *                     type: string
+   *                   email:
+   *                     type: string
+   *                   created_at:
+   *                     type: string
+   *                     format: date-time
+   *       500:
+   *         description: Erreur serveur
+   */
+  public async index({ response }: HttpContext) {
+    try {
+      const users = await this.userService.getAllUsers()
+      return response.json(users)
+    } catch (error) {
+      return response.internalServerError({ message: 'Erreur lors de la récupération des utilisateurs', error })
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/admin/users/{id}:
+   *   get:
+   *     summary: Récupère un utilisateur spécifique
+   *     tags:
+   *       - Utilisateurs
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID de l'utilisateur à récupérer
+   *         schema:
+   *           type: integer
+   *     responses:
+   *       200:
+   *         description: Détails de l'utilisateur
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: integer
+   *                 username:
+   *                   type: string
+   *                 email:
+   *                   type: string
+   *                 created_at:
+   *                   type: string
+   *                   format: date-time
+   *       404:
+   *         description: Utilisateur non trouvé
+   */
 
   /**
    * Récupère tous les utilisateurs

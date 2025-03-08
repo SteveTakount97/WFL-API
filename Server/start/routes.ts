@@ -44,6 +44,7 @@ router.get('/swagger.json', async ({ response }) => {
 // Affichage de l'interface Swagger UI
 router.get('/swagger-ui', async ({ response }) => {
   return response.send(swaggerUi.generateHTML(swaggerSpec))
+  
 })
 
   // Authentification
