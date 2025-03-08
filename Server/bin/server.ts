@@ -11,6 +11,7 @@
 
 import 'reflect-metadata'
 import { Ignitor, prettyPrintError } from '@adonisjs/core'
+import setupSwagger from '#start/swagger'
 
 /**
  * URL to the application root. AdonisJS need it to resolve
@@ -34,6 +35,11 @@ new Ignitor(APP_ROOT, { importer: IMPORTER })
     app.booting(async () => {
       await import('#start/env')
     })
+        //  Démarage de Swagger après le boot de l'application
+        app.booted(async () => {
+          setupSwagger(app) // ✅ Lancer Swagger après le boot
+        })
+        
     app.listen('SIGTERM', () => app.terminate())
     app.listenIf(app.managedByPm2, 'SIGINT', () => app.terminate())
   })
@@ -43,3 +49,4 @@ new Ignitor(APP_ROOT, { importer: IMPORTER })
     process.exitCode = 1
     prettyPrintError(error)
   })
+

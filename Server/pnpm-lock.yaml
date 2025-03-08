@@ -23,9 +23,6 @@ importers:
       '@adonisjs/lucid':
         specifier: ^21.6.0
         version: 21.6.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.2(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0))(@vinejs/vine@3.0.0)(luxon@3.5.0)(pg@8.13.3)
-      '@adonisjs/validator':
-        specifier: ^13.0.2
-        version: 13.0.2(@adonisjs/core@6.17.2(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0))
       '@sentry/node':
         specifier: ^9.5.0
         version: 9.5.0
@@ -60,6 +57,9 @@ importers:
       '@adonisjs/tsconfig':
         specifier: ^1.4.0
         version: 1.4.0
+      '@adonisjs/validator':
+        specifier: ^13.0.2
+        version: 13.0.2(@adonisjs/core@6.17.2(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0))
       '@japa/api-client':
         specifier: ^3.0.3
         version: 3.0.3(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0)
@@ -75,6 +75,9 @@ importers:
       '@swc/core':
         specifier: 1.10.7
         version: 1.10.7
+      '@types/express':
+        specifier: ^5.0.0
+        version: 5.0.0
       '@types/luxon':
         specifier: ^3.4.2
         version: 3.4.2
