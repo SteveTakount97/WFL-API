@@ -1,12 +1,14 @@
 import swaggerJsdoc from 'swagger-jsdoc'
 import { HttpContext } from '@adonisjs/http-server'
+import { writeFileSync } from 'fs'
+import { stringify } from 'yaml'
 
 // Spécification de Swagger
 const swaggerSpec = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'API Example',
+      title: 'API WFL',
       version: '1.0.0',
       description: 'Documentation API WFL avec Swagger',
     },
@@ -42,9 +44,18 @@ export default class SwaggerController {
   }
 
   /**
-   * Router pour récupérer le fichier JSON Swagger
+   * Fonction pour récupérer le fichier JSON Swagger
    */
   public async showSwaggerJSON({ response }: HttpContext) {
     return response.json(swaggerSpec)
   }
+  /**
+   * Générer le fichier swagger.yaml
+   */
+  public async generateSwaggerYaml() {
+    const yamlData = stringify(swaggerSpec) // Convertir en YAML
+    writeFileSync('swagger.yaml', yamlData) // Écrire dans un fichier
+    console.log('✅ Fichier swagger.yaml généré avec succès !')
+  }
+  
 }

@@ -11,7 +11,8 @@
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+     "generate-swagger": "ts-node scripts/generate-swagger.ts"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
@@ -63,6 +64,7 @@
     "@adonisjs/lucid": "^21.6.0",
     "@sentry/node": "^9.5.0",
     "@vinejs/vine": "^3.0.0",
+    "js-yaml": "^4.1.0",
     "luxon": "^3.5.0",
     "pg": "^8.13.3",
     "reflect-metadata": "^0.2.2",

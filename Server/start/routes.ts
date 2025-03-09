@@ -42,6 +42,7 @@ router.get('/swagger-ui', swaggerController.showSwaggerUI.bind(swaggerController
 // Route pour récupérer le fichier JSON Swagger
 router.get('/swagger-json', swaggerController.showSwaggerJSON.bind(swaggerController))
 
+
   // Authentification
   router.post('/auth/register', authController.register)
   router.post('/auth/login', authController.login)
