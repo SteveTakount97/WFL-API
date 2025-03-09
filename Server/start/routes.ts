@@ -12,12 +12,11 @@ import AuthController from '#controllers/AuthController'
 import UsersController from '#controllers/users_controller'
 import DogsController from '#controllers/dogs_controller'
 import ContactsController from '#controllers/contacts_controller'
-import swaggerUi from 'swagger-ui-express'
-import swaggerSpec from './swagger.js'
 import MessagesController from '#controllers/messages_controller'
 import DogFamiliesController from '#controllers/dog_families_controller'
 import AuthMiddleware from '#middleware/auth_middleware'
 import AdminMiddleware from '#middleware/admin_middleware'
+import SwaggerController from './swagger.js'
 
 
 
@@ -27,6 +26,7 @@ const dogsController = new DogsController()
 const contactsController = new ContactsController()
 const messagesController = new MessagesController()
 const dogFamiliesController = new DogFamiliesController()
+const swaggerController = new SwaggerController()
 
 
 
@@ -36,16 +36,11 @@ router.get('/', async () => {
   return 'Bienvenue sur l\'API WFL'
 })
 
-// Affichage du fichier swagger.json
-router.get('/swagger.json', async ({ response }) => {
-  return response.json(swaggerSpec)
-})
+// Route pour afficher Swagger UI
+router.get('/swagger-ui', swaggerController.showSwaggerUI.bind(swaggerController))
 
-// Affichage de l'interface Swagger UI
-router.get('/swagger-ui', async ({ response }) => {
-  return response.send(swaggerUi.generateHTML(swaggerSpec))
-  
-})
+// Route pour récupérer le fichier JSON Swagger
+router.get('/swagger-json', swaggerController.showSwaggerJSON.bind(swaggerController))
 
   // Authentification
   router.post('/auth/register', authController.register)

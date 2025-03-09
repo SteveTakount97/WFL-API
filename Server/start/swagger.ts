@@ -1,42 +1,50 @@
 import swaggerJsdoc from 'swagger-jsdoc'
-import swaggerUi from 'swagger-ui-express'
-import { Application } from '@adonisjs/core/app'
-import { ContainerBindings } from '@adonisjs/core/types'
+import { HttpContext } from '@adonisjs/http-server'
 
-const swaggerDefinition = {
-  openapi: '3.0.0',
-  info: {
-    title: 'API WFL',
-    version: '1.0.0',
-    description: 'Documentation de l\'API WFL',
-  },
-  servers: [
-    {
-      url: 'http://localhost:3333',
+// Spécification de Swagger
+const swaggerSpec = swaggerJsdoc({
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Example',
+      version: '1.0.0',
+      description: 'Documentation API WFL avec Swagger',
     },
-  ],
-}
+  },
+  apis: ['./app/controllers/**/*.ts'], // Chemin vers les contrôleurs
+})
 
-const options = {
-  swaggerDefinition,
-  apis: ['./app/controllers/*.ts', './start/routes.ts'], 
-}
+export default class SwaggerController {
+  /**
+   * Route pour afficher Swagger UI
+   */
+  public async showSwaggerUI({ response }: HttpContext) {
+    response.header('Content-Type', 'text/html')
+    return response.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Swagger UI</title>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.1/swagger-ui.min.css" />
+        </head>
+        <body>
+          <div id="swagger-ui"></div>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.1/swagger-ui-bundle.min.js"></script>
+          <script>
+            const ui = SwaggerUIBundle({
+              url: '/swagger-json',
+              dom_id: '#swagger-ui',
+            });
+          </script>
+        </body>
+      </html>
+    `)
+  }
 
-const specs = swaggerJsdoc(options)
-
-
-export async function setupSwagger(app: Application<ContainerBindings>) {
-  try {
-    // récupérer une instance du serveur HTTP
-    const httpServer = await app.container.make('Adonis/Core/Server')
-
-    if (httpServer) {
-
-      httpServer.use('/docs', swaggerUi.serve, swaggerUi.setup(specs))
-    }
-  } catch (error) {
-    console.error('Erreur lors de la configuration de Swagger:', error)
+  /**
+   * Router pour récupérer le fichier JSON Swagger
+   */
+  public async showSwaggerJSON({ response }: HttpContext) {
+    return response.json(swaggerSpec)
   }
 }
-
-export default setupSwagger

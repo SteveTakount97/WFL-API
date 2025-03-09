@@ -37,7 +37,7 @@ new Ignitor(APP_ROOT, { importer: IMPORTER })
     })
         //  Démarage de Swagger après le boot de l'application
         app.booted(async () => {
-          setupSwagger(app) // ✅ Lancer Swagger après le boot
+          new setupSwagger() // ✅ Lancer Swagger après le boot
         })
         
     app.listen('SIGTERM', () => app.terminate())
