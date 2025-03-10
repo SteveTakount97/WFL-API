@@ -82,114 +82,6 @@ export default class DogController {
     }
   }
 
-  /**
-   * @swagger
-   * /api/admin/dogs/{id}:
-   *   put:
-   *     summary: Modifier un chien
-   *     tags:
-   *       - Dogs
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         description: ID du chien à modifier
-   *         schema:
-   *           type: integer
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               nameDog:
-   *                 type: string
-   *               breed:
-   *                 type: string
-   *               age:
-   *                 type: integer
-   *               birthday:
-   *                 type: string
-   *                 format: date
-   *               gender:
-   *                 type: string
-   *     responses:
-   *       200:
-   *         description: Chien modifié avec succès
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 id:
-   *                   type: integer
-   *                 nameDog:
-   *                   type: string
-   *                 breed:
-   *                   type: string
-   *                 age:
-   *                   type: integer
-   *                 birthday:
-   *                   type: string
-   *                   format: date
-   *                 gender:
-   *                   type: string
-   *       404:
-   *         description: Chien non trouvé
-   *       400:
-   *         description: Erreur lors de la modification du chien
-   */
-  public async update({ params, request, response }: HttpContext) {
-    const dogSchema = schema.create({
-      nameDog: schema.string.optional({ trim: true }, [rules.minLength(3)]),
-      breed: schema.string.optional({ trim: true }),
-      age: schema.number.optional(),
-      birthday: schema.date.optional(),
-      gender: schema.string.optional({ trim: true }),
-    });
-
-    const data = await request.validate({ schema: dogSchema });
-
-    try {
-      const dog = await this.dogService.updateDog(params.id, data);
-      if (!dog) {
-        return response.notFound({ error: 'Dog not found' });
-      }
-      return response.ok(dog);
-    } catch (error) {
-      return response.badRequest({ error: error.message });
-    }
-  }
-
-  /**
-   * @swagger
-   * /api/admin/dogs/{id}:
-   *   delete:
-   *     summary: Supprimer un chien
-   *     tags:
-   *       - Dogs
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         description: ID du chien à supprimer
-   *         schema:
-   *           type: integer
-   *     responses:
-   *       204:
-   *         description: Chien supprimé avec succès
-   *       400:
-   *         description: Erreur lors de la suppression du chien
-   */
-  public async destroy({ params, response }: HttpContext) {
-    try {
-      await this.dogService.deleteDog(params.id);
-      return response.noContent();  // Retourne une réponse vide 204 (No Content) si la suppression est réussie
-    } catch (error) {
-      return response.badRequest({ error: error.message });
-    }
-  }
 
   /**
    * @swagger
@@ -281,4 +173,113 @@ export default class DogController {
       return response.status(error.status || 500).json({ message: error.message });
     }
   }
+    /**
+   * @swagger
+   * /api/admin/dogs/{id}:
+   *   put:
+   *     summary: Modifier un chien
+   *     tags:
+   *       - Dogs
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID du chien à modifier
+   *         schema:
+   *           type: integer
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               nameDog:
+   *                 type: string
+   *               breed:
+   *                 type: string
+   *               age:
+   *                 type: integer
+   *               birthday:
+   *                 type: string
+   *                 format: date
+   *               gender:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: Chien modifié avec succès
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: integer
+   *                 nameDog:
+   *                   type: string
+   *                 breed:
+   *                   type: string
+   *                 age:
+   *                   type: integer
+   *                 birthday:
+   *                   type: string
+   *                   format: date
+   *                 gender:
+   *                   type: string
+   *       404:
+   *         description: Chien non trouvé
+   *       400:
+   *         description: Erreur lors de la modification du chien
+   */
+    public async update({ params, request, response }: HttpContext) {
+      const dogSchema = schema.create({
+        nameDog: schema.string.optional({ trim: true }, [rules.minLength(3)]),
+        breed: schema.string.optional({ trim: true }),
+        age: schema.number.optional(),
+        birthday: schema.date.optional(),
+        gender: schema.string.optional({ trim: true }),
+      });
+  
+      const data = await request.validate({ schema: dogSchema });
+  
+      try {
+        const dog = await this.dogService.updateDog(params.id, data);
+        if (!dog) {
+          return response.notFound({ error: 'Dog not found' });
+        }
+        return response.ok(dog);
+      } catch (error) {
+        return response.badRequest({ error: error.message });
+      }
+    }
+  
+    /**
+     * @swagger
+     * /api/admin/dogs/{id}:
+     *   delete:
+     *     summary: Supprimer un chien
+     *     tags:
+     *       - Dogs
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID du chien à supprimer
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       204:
+     *         description: Chien supprimé avec succès
+     *       400:
+     *         description: Erreur lors de la suppression du chien
+     */
+    public async destroy({ params, response }: HttpContext) {
+      try {
+        await this.dogService.deleteDog(params.id);
+        return response.noContent();  // Retourne une réponse vide 204 (No Content) si la suppression est réussie
+      } catch (error) {
+        return response.badRequest({ error: error.message });
+      }
+    }
+  
 }

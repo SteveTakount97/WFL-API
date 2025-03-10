@@ -52,16 +52,18 @@ router.group(() => {
   // Utilisateurs
   router.get('/admin/users', usersController.index)
   router.get('/admin/users/:id', usersController.show)
-  router.delete('/admin/users/:id', usersController.destroy)
   router.put('/admin/users/:id', usersController.update) 
+  router.delete('/admin/users/:id', usersController.destroy)
+ 
 
 
   // Gestion des chiens
   router.post('/admin/dogs', dogsController.store)  
-  router.put('/admin/dogs/:id', dogsController.update)  
-  router.delete('/admin/dogs/:id', dogsController.destroy)
   router.get('/admin/dogs/:id', dogsController.show)
   router.get('/dogs', dogsController.index)
+  router.put('/admin/dogs/:id', dogsController.update)  
+  router.delete('/admin/dogs/:id', dogsController.destroy)
+ 
 
   // Gestion des familles de chiens
   router.post('/dog-families', dogFamiliesController.store) 
@@ -73,8 +75,9 @@ router.group(() => {
   // Contacts
  router.post('/contacts', contactsController.store) 
  router.get('/contacts', contactsController.index) 
- router.delete('/contacts/:id', contactsController.destroy) 
  router.put('/contacts/:id', contactsController.update)
+ router.delete('/contacts/:id', contactsController.destroy) 
+
 
 
  // Messages

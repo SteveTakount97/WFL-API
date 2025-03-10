@@ -2,6 +2,49 @@ import { HttpContext } from '@adonisjs/core/http';
 import DogFamilyService from '#services/DogFamilyServices';
 
 export default class DogFamilyController {
+    /**
+   * @swagger
+   * /api/dog-families:
+   *   post:
+   *     summary: Crée une nouvelle famille de chiens
+   *     tags:
+   *       - Dog Families
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               name:
+   *                 type: string
+   *               description:
+   *                 type: string
+   *     responses:
+   *       201:
+   *         description: Famille de chiens créée avec succès
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: integer
+   *                 name:
+   *                   type: string
+   *                 description:
+   *                   type: string
+   *       400:
+   *         description: Erreur lors de la création de la famille
+   */
+    public async store({ request, response }: HttpContext) {
+      try {
+        const newFamily = await DogFamilyService.createFamily(request);
+        return response.created(newFamily);
+      } catch (error) {
+        return response.badRequest({ message: error.messages || 'Erreur lors de la création' });
+      }
+    }
   /**
    * @swagger
    * /api/dog-families:
@@ -72,50 +115,6 @@ export default class DogFamilyController {
       return response.ok(family);
     } catch (error) {
       return response.notFound({ message: 'Famille non trouvée' });
-    }
-  }
-
-  /**
-   * @swagger
-   * /api/dog-families:
-   *   post:
-   *     summary: Crée une nouvelle famille de chiens
-   *     tags:
-   *       - Dog Families
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               name:
-   *                 type: string
-   *               description:
-   *                 type: string
-   *     responses:
-   *       201:
-   *         description: Famille de chiens créée avec succès
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 id:
-   *                   type: integer
-   *                 name:
-   *                   type: string
-   *                 description:
-   *                   type: string
-   *       400:
-   *         description: Erreur lors de la création de la famille
-   */
-  public async store({ request, response }: HttpContext) {
-    try {
-      const newFamily = await DogFamilyService.createFamily(request);
-      return response.created(newFamily);
-    } catch (error) {
-      return response.badRequest({ message: error.messages || 'Erreur lors de la création' });
     }
   }
 
