@@ -8,6 +8,7 @@ export default class UsersController {
   constructor() {
     this.userService = new UserService()
   }
+
   /**
    * @swagger
    * /api/admin/users:
@@ -80,22 +81,6 @@ export default class UsersController {
    *       404:
    *         description: Utilisateur non trouvé
    */
-
-  /**
-   * Récupère tous les utilisateurs
-   */
-  public async index({ response }: HttpContext) {
-    try {
-      const users = await this.userService.getAllUsers()
-      return response.json(users)
-    } catch (error) {
-      return response.internalServerError({ message: 'Erreur lors de la récupération des utilisateurs', error })
-    }
-  }
-
-  /**
-   * Récupère un utilisateur spécifique
-   */
   public async show({ params, response }: HttpContext) {
     try {
       const user = await this.userService.getUserById(parseInt(params.id))
@@ -106,8 +91,42 @@ export default class UsersController {
   }
 
   /**
-   * Met à jour un utilisateur
-   */
+   * @swagger
+  /**
+ * @swagger
+ * /api/admin/users/{id}:
+ *   put:
+ *     summary: Met à jour un utilisateur
+ *     tags:
+ *       - Utilisateurs
+ *     security:
+ *       - Bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de l'utilisateur à mettre à jour
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Utilisateur mis à jour avec succès
+ *       400:
+ *         description: Erreur lors de la mise à jour
+ */
   public async update({ params, request, response }: HttpContext) {
     try {
       const user = await this.userService.updateUser(parseInt(params.id), request)
@@ -117,9 +136,29 @@ export default class UsersController {
     }
   }
 
-  /**
-   * Supprime un utilisateur
-   */
+  
+/**
+ * @swagger
+ * /api/admin/users/{id}:
+ *   delete:
+ *     summary: Supprime un utilisateur
+ *     tags:
+ *       - Utilisateurs
+ *     security:
+ *       - Bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de l'utilisateur à supprimer
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Utilisateur supprimé avec succès
+ *       404:
+ *         description: Utilisateur non trouvé
+ */
   public async destroy({ params, response }: HttpContext) {
     try {
       await this.userService.deleteUser(parseInt(params.id))
