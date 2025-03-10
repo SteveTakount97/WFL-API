@@ -53,7 +53,7 @@ router.group(() => {
   router.get('/admin/users', usersController.index)
   router.get('/admin/users/:id', usersController.show)
   router.delete('/admin/users/:id', usersController.destroy)
-  router.put('/admin/users/:id', usersController.update) // Modifier un utilisateur
+  router.put('/admin/users/:id', usersController.update) 
 
 
   // Gestion des chiens
