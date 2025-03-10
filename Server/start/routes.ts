@@ -64,11 +64,11 @@ router.group(() => {
   router.get('/dogs', dogsController.index)
 
   // Gestion des familles de chiens
-  router.post('/admin/dog-families', dogFamiliesController.store) 
-  router.get('/admin/dog-families', dogFamiliesController.index) 
-  router.get('/admin/dog-families/:id', dogFamiliesController.show) 
-  router.put('/admin/dog-families/:id', dogFamiliesController.update)
-  router.delete('/admin/dog-families/:id', dogFamiliesController.destroy) 
+  router.post('/dog-families', dogFamiliesController.store) 
+  router.get('/dog-families', dogFamiliesController.index) 
+  router.get('/dog-families/:id', dogFamiliesController.show) 
+  router.put('/dog-families/:id', dogFamiliesController.update)
+  router.delete('/dog-families/:id', dogFamiliesController.destroy) 
  
   // Contacts
  router.post('/contacts', contactsController.store) 

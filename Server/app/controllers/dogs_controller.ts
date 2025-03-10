@@ -11,7 +11,7 @@ export default class DogController {
 
   /**
    * @swagger
-   * /api/dogs:
+   * /api/admin/dogs:
    *   post:
    *     summary: Ajouter un chien
    *     tags:
@@ -84,7 +84,7 @@ export default class DogController {
 
   /**
    * @swagger
-   * /api/dogs/{id}:
+   * /api/admin/dogs/{id}:
    *   put:
    *     summary: Modifier un chien
    *     tags:
@@ -164,7 +164,7 @@ export default class DogController {
 
   /**
    * @swagger
-   * /api/dogs/{id}:
+   * /api/admin/dogs/{id}:
    *   delete:
    *     summary: Supprimer un chien
    *     tags:
@@ -193,7 +193,7 @@ export default class DogController {
 
   /**
    * @swagger
-   * /api/dogs:
+   * /api/admin/dogs:
    *   get:
    *     summary: Récupérer toutes les informations sur les chiens
    *     tags:
@@ -235,7 +235,7 @@ export default class DogController {
 
   /**
    * @swagger
-   * /api/dogs/{id}:
+   * /api/admin/dogs/{id}:
    *   get:
    *     summary: Récupérer les informations d'un chien par son ID
    *     tags:

@@ -13,7 +13,7 @@ const swaggerSpec = swaggerJsdoc({
       description: 'Documentation API WFL avec Swagger',
     },
   },
-  apis: ['./app/controllers/**/*.ts'], // Chemin vers les contrôleurs
+  apis: ['./app/controllers/**/*.ts', './start/routes.ts'], // Chemin vers les contrôleurs
 })
 
 export default class SwaggerController {
