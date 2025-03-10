@@ -41,12 +41,12 @@ router.get('/swagger-ui', swaggerController.showSwaggerUI.bind(swaggerController
 
 // Route pour récupérer le fichier JSON Swagger
 router.get('/swagger-json', swaggerController.showSwaggerJSON.bind(swaggerController))
+router.get('/swagger-yaml', swaggerController.generateSwaggerYaml.bind(swaggerController))
 
-
-  // Authentification
-  router.post('/auth/register', authController.register)
-  router.post('/auth/login', authController.login)
-  router.post('/auth/logout', authController.logout)
+// Authentification
+router.post('/auth/register', authController.register)
+router.post('/auth/login', authController.login)
+router.post('/auth/logout', authController.logout)
 
 router.group(() => {
   // Utilisateurs
