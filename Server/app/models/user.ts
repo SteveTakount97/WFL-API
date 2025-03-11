@@ -31,7 +31,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare password: string
 
   @column()
-  declare role: string
+  declare role: 'client' | 'admin'
 
 
   //relations tables
