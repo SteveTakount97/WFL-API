@@ -47,6 +47,11 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   },
   {
+    name: "UserList",
+    icon: <ListIcon />,
+    subItems: [{ name: "User List", path: "/userslist", pro: false }],
+  },
+  {
     name: "Tables",
     icon: <TableIcon />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
@@ -57,6 +62,8 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
       { name: "404 Error", path: "/error-404", pro: false },
+      { name: "User Page", path: "/user-page", pro: false },
+      { name: "Dog Page", path: "/dog-page", pro: false },
     ],
   },
 ];
