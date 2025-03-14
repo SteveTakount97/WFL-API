@@ -64,6 +64,8 @@ const navItems: NavItem[] = [
       { name: "404 Error", path: "/error-404", pro: false },
       { name: "User Page", path: "/user-page", pro: false },
       { name: "Dog Page", path: "/dog-page", pro: false },
+      { name: "DogFamily Page", path: "/dogfamilie-page", pro: false },
+
     ],
   },
 ];

@@ -20,6 +20,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import UsersPage from "./pages/Admin/Users/UsersPage";
 import DogPage from "./pages/Admin/dog/DogPage";
+import DogFamilyPage from "./pages/Admin/dogfamilie/DogFamilies";
 
 
 export default function App() {
@@ -40,6 +41,7 @@ export default function App() {
             <Route path="/blank" element={<Blank />} />
             <Route path="/user-page" element={<UsersPage/>}/>
             <Route path="/dog-page" element={<DogPage/>} />
+            <Route path="dogfamilie-page" element={<DogFamilyPage />} />
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
