@@ -1,7 +1,7 @@
 // services/dogFamilyService.ts
 import useFetch from "../hooks/UseFetch";
 
-const API_URL = '/api/admin/dog-families';
+const API_URL = '/admin/dog-families';
 
 // Récupérer toutes les familles de chiens
 export const getAllDogFamilies = async () => {

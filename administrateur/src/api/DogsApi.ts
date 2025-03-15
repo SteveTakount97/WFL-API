@@ -1,53 +1,66 @@
-import { getAllDogs, getDogById, createDog, updateDog, deleteDog } from "../services/dogService";
+import { useState, useEffect } from 'react';
+import useFetch from '../hooks/UseFetch';
+import { getAllDogs, getDogById, createDog, updateDog, deleteDog } from '../services/dogService';
 
-export const dogServiceLayer = {
-  // Appelle la fonction pour obtenir tous les chiens
-  getAllDogs: async () => {
-    try {
-      return await getAllDogs();
-    } catch (error) {
-      console.error("Erreur dans dogServiceLayer - getAllDogs:", error);
-      throw error; // Propager l'erreur
-    }
-  },
+const useDogsApi = () => {
+  const { request } = useFetch();
+  const [dogs, setDogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Appelle la fonction pour obtenir un chien par son ID
-  getDogById: async (id: string) => {
-    try {
-      return await getDogById(id);
-    } catch (error) {
-      console.error(`Erreur dans dogServiceLayer - getDogById(${id}):`, error);
-      throw error; // Propager l'erreur
-    }
-  },
+  useEffect(() => {
+    loadDogs();
+  }, []);
 
-  // Appelle la fonction pour créer un chien
-  createDog: async (dogData: { name: string; breed: string; age: number }) => {
+  const loadDogs = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      return await createDog(dogData);
-    } catch (error) {
-      console.error("Erreur dans dogServiceLayer - createDog:", error);
-      throw error; // Propager l'erreur
+      const data = await getAllDogs(request);
+      setDogs(data);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
     }
-  },
+  };
 
-  // Appelle la fonction pour mettre à jour un chien
-  updateDog: async (id: string, dogData: { name: string; breed: string; age: number }) => {
+  const getDogByIdHandler = async (id: string) => {
     try {
-      return await updateDog(id, dogData);
-    } catch (error) {
-      console.error(`Erreur dans dogServiceLayer - updateDog(${id}):`, error);
-      throw error; // Propager l'erreur
+      return await getDogById(request, id);
+    } catch (err) {
+      setError((err as Error).message);
     }
-  },
+  };
 
-  // Appelle la fonction pour supprimer un chien
-  deleteDog: async (id: string) => {
+  const createDogHandler = async (data: any) => {
     try {
-      return await deleteDog(id);
-    } catch (error) {
-      console.error(`Erreur dans dogServiceLayer - deleteDog(${id}):`, error);
-      throw error; // Propager l'erreur
+      await createDog(request, data);
+      loadDogs();
+    } catch (err) {
+      setError((err as Error).message);
     }
-  }
+  };
+
+  const updateDogHandler = async (request: (url: string, options?: RequestInit) => Promise<any>, id: string, data: any) => {
+    try {
+      await updateDog(request, id, data);
+      loadDogs();
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  const deleteDogHandler = async (id: string) => {
+    try {
+      await deleteDog(request, id);
+      loadDogs();
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  return { dogs, loading, error, getDogByIdHandler, createDogHandler, updateDogHandler, deleteDogHandler };
 };
+
+export default useDogsApi;

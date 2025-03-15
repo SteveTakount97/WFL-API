@@ -1,9 +1,7 @@
-//recupération des données des utilisateurs
-import useFetch from "../hooks/UseFetch"
-const API_URL = '/api/admin/users'
+const API_URL = '/admin/users'
 
-export const fetchUsers = async () => {
-  const { request } = useFetch()
+// Récupérer la liste des utilisateurs
+export const fetchUsers = async (request: (url: string, options?: any) => Promise<Response>) => {
   const response = await request(API_URL)
   if (!response.ok) {
     throw new Error('Erreur de récupération des utilisateurs')
@@ -11,8 +9,8 @@ export const fetchUsers = async () => {
   return response.json()
 }
 
-export const fetchUserById = async (id: string) => {
-  const { request } = useFetch()
+// Récupérer un utilisateur par ID
+export const fetchUserById = async (request: (url: string, options?: any) => Promise<Response>, id: string) => {
   const response = await request(`${API_URL}/${id}`)
   if (!response.ok) {
     throw new Error(`Erreur de récupération de l'utilisateur avec l'id ${id}`)
@@ -20,39 +18,33 @@ export const fetchUserById = async (id: string) => {
   return response.json()
 }
 
-export const updateUser = async (id: string, data: any) => {
-  const { request } = useFetch()
-  const response = await request(`${API_URL}/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+// Créer un utilisateur
+export const createUser = async (request: (url: string, options?: any) => Promise<Response>, data: any) => {
+  return await request(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
+}
 
+// Mettre à jour un utilisateur
+export const updateUser = async (request: (url: string, options?: any) => Promise<Response>, id: string, data: any) => {
+  const response = await request(`${API_URL}/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
-    throw new Error('Erreur de mise à jour de l\'utilisateur')
+    throw new Error("Erreur de mise à jour de l'utilisateur")
   }
   return response.json()
 }
-export const createUser = async (data: any) => {
-  const { request } = useFetch()
-  return await request(API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
-}
-export const deleteUser = async (id: string) => {
-  const { request } = useFetch()
-  const response = await request(`${API_URL}/${id}`, {
-    method: 'DELETE',
-  })
 
+// Supprimer un utilisateur
+export const deleteUser = async (request: (url: string, options?: any) => Promise<Response>, id: string) => {
+  const response = await request(`${API_URL}/${id}`, { method: 'DELETE' })
   if (!response.ok) {
-    throw new Error('Erreur de suppression de l\'utilisateur')
+    throw new Error("Erreur de suppression de l'utilisateur")
   }
   return response.json()
 }

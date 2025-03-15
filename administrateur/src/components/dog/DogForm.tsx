@@ -1,10 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { createDog, updateDog } from '../../services/dogService';
+import useFetch from '../../hooks/UseFetch';
+import { useEffect, useState } from 'react';
+import useDogsApi from '../../api/DogsApi';
 import { toast } from 'react-toastify';
 
-const DogForm = ({ selectedDog, onReset }: { selectedDog: any; onReset: () => void }) => {
-  const [dog, setDog] = useState({ name: '', breed: '', age: 0 });
+interface Dog {
+  id?: string;
+  name: string;
+  breed: string;
+  age: number;
+}
+
+interface DogFormProps {
+  selectedDog?: Dog | null;
+  onReset: () => void;
+}
+
+const DogForm: React.FC<DogFormProps> = ({ selectedDog, onReset }) => {
+  const [dog, setDog] = useState<Dog>({ name: '', breed: '', age: 0 });
   const [loading, setLoading] = useState(false);
+  const { request } = useFetch();
+  const { updateDogHandler, createDogHandler } = useDogsApi();
 
   useEffect(() => {
     if (selectedDog) {
@@ -16,7 +31,7 @@ const DogForm = ({ selectedDog, onReset }: { selectedDog: any; onReset: () => vo
     const { name, value } = e.target;
     setDog((prevDog) => ({
       ...prevDog,
-      [name]: value,
+      [name]: name === 'age' ? Number(value) : value, // ✅ Convertit 'age' en nombre
     }));
   };
 
@@ -25,15 +40,21 @@ const DogForm = ({ selectedDog, onReset }: { selectedDog: any; onReset: () => vo
     setLoading(true);
 
     try {
+      console.log('Request:', request);
+      console.log('Dog Data:', dog);
       if (selectedDog) {
-        await updateDog(selectedDog.id, dog);
+        console.log('Updating Dog ID:', selectedDog.id);
+        if (!selectedDog.id) throw new Error('ID du chien manquant');
+        await updateDogHandler(request, selectedDog.id, dog);
         toast.success('Chien mis à jour avec succès !');
       } else {
-        await createDog(dog);
+        console.log('Creating New Dog');
+        await createDogHandler(request, dog);
         toast.success('Chien ajouté avec succès !');
       }
       onReset();
     } catch (err) {
+      console.error('Erreur dans handleSubmit:', err);
       toast.error('Une erreur est survenue.');
     } finally {
       setLoading(false);

@@ -1,39 +1,23 @@
-import { useEffect, useState } from 'react'
-import { fetchUsers, deleteUser } from '../../services/userServices'
+import { useEffect } from 'react'
+import useUsersApi from '../../api/UserApi'
 
 
-interface User {
-  id: string
-  full_name: string
-  email: string
-}
+
 
 const UserList = () => {
-  const [users, setUsers] = useState<User[]>([])
+  const { users, loading, error, deleteUserHandler } = useUsersApi()  // ✅ On utilise useUsersApi()
 
   useEffect(() => {
-    loadUsers()
+    // ✅ Plus besoin d'appeler fetchUsers ici, il est déjà géré dans useUsersApi
   }, [])
-
-  // Gestion des erreurs 
-  const loadUsers = async () => {
-    try {
-      const data = await fetchUsers()
-      setUsers(data)
-    } catch (error) {
-      console.error('Erreur lors du chargement des utilisateurs:', error)
-    }
-  }
 
   // Suppression directe dans l'état local après suppression API
   const handleDelete = async (id: string) => {
     if (confirm('Voulez-vous supprimer cet utilisateur ?')) {
       try {
-        await deleteUser(id)
-        // Supprime l'utilisateur directement dans l'état local
-        setUsers((prev) => prev.filter((user) => user.id !== id))
+        await deleteUserHandler(id)  // ✅ On passe par useUsersApi
       } catch (error) {
-        console.error('Erreur lors de la suppression de l\'utilisateur:', error)
+        console.error("Erreur lors de la suppression de l'utilisateur:", error)
       }
     }
   }
@@ -41,10 +25,12 @@ const UserList = () => {
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Liste des utilisateurs</h2>
+      {loading && <p>Chargement...</p>}
+      {error && <p className="text-red-500">Erreur : {error}</p>}
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
-          <th className="border p-2">ID User</th>
+            <th className="border p-2">ID User</th>
             <th className="border p-2">Nom complet</th>
             <th className="border p-2">Email</th>
             <th className="border p-2">Actions</th>
@@ -66,7 +52,7 @@ const UserList = () => {
               </td>
             </tr>
           ))}
-          {users.length === 0 && (
+          {users.length === 0 && !loading && (
             <tr>
               <td colSpan={3} className="border p-2 text-center text-gray-500">
                 Aucun utilisateur trouvé.
