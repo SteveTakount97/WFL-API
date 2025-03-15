@@ -60,7 +60,7 @@ router.group(() => {
   // Gestion des chiens
   router.post('/admin/dogs', dogsController.store)  
   router.get('/admin/dogs/:id', dogsController.show)
-  router.get('/dogs', dogsController.index)
+  router.get('/admin/dogs', dogsController.index)
   router.put('/admin/dogs/:id', dogsController.update)  
   router.delete('/admin/dogs/:id', dogsController.destroy)
  
