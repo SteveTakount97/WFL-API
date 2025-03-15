@@ -19,7 +19,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare id: number
 
   @column()
-  declare full_name: string | null
+  declare full_name: string 
 
   @column()
   declare email: string
@@ -32,8 +32,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column()
   declare role: 'client' | 'admin'
-
-
+  
+  @column()
+  declare securekey: string
   //relations tables
   @hasMany(() => Dog)
   public dogs!: relations.HasMany<typeof Dog>;
