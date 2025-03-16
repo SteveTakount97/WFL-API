@@ -3,9 +3,11 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import { useUser } from "../../context/UserContext";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const { firstName, lastName, email, username } = useUser();
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
@@ -25,7 +27,7 @@ export default function UserInfoCard() {
                 First Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Musharof
+              {firstName}
               </p>
             </div>
 
@@ -34,7 +36,7 @@ export default function UserInfoCard() {
                 Last Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Chowdhury
+              {lastName}
               </p>
             </div>
 
@@ -43,16 +45,16 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                randomuser@pimjo.com
+              {email}
               </p>
             </div>
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Phone
+                Username
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +09 363 398 46
+              {username}
               </p>
             </div>
 

@@ -7,22 +7,32 @@ export const useFetch = () => {
   const [error, setError] = useState<string | null>(null)
 
   const request = async (url: string, options: RequestInit = {}) => {
+    console.log("Request function called with url:", url);
     setLoading(true)
     setError(null)
 
     try {
-      const token = localStorage.getItem('token') // Récupération du token JWT
+      const token = localStorage.getItem('authToken') // Récupération du token JWT
+      if (!token) {
+        console.error("Aucun token disponible")
+      }
       const res = await fetch(`${BASE_URL}${url}`, {
         ...options,
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : '',
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
           ...options.headers,
         },
       })
-
+       
+      console.log('Fetch response:', res);
       if (!res.ok) {
-        throw new Error(`Erreur : ${res.statusText}`)
+        if (res.status >= 500) {
+          throw new Error('Erreur interne du serveur');
+        } else if (res.status >= 400) {
+          throw new Error('Erreur client');
+        }
+        throw new Error(`Erreur inconnue: ${res.statusText}`);
       }
 
       const data = await res.json()

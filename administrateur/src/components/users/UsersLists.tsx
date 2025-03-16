@@ -5,10 +5,10 @@ import useUsersApi from '../../api/UserApi'
 
 
 const UserList = () => {
-  const { users, loading, error, deleteUserHandler } = useUsersApi()  // ✅ On utilise useUsersApi()
+  const { users, loading, error, deleteUserHandler } = useUsersApi()  // On utilise useUsersApi()
 
   useEffect(() => {
-    // ✅ Plus besoin d'appeler fetchUsers ici, il est déjà géré dans useUsersApi
+    // fetchUsers est déjà géré dans useUsersApi
   }, [])
 
   // Suppression directe dans l'état local après suppression API

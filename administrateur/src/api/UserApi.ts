@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react'
 import { fetchUsers, fetchUserById, createUser, updateUser, deleteUser } from '../services/userServices'
+import useFetch from '../hooks/UseFetch'
 
 const useUsersApi = () => {
+  const { request } = useFetch()  
+  console.log('Request function:', request);
+
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -14,7 +18,7 @@ const useUsersApi = () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchUsers()
+      const data = await fetchUsers(request)  
       setUsers(data)
     } catch (err) {
       setError((err as Error).message)
@@ -25,7 +29,7 @@ const useUsersApi = () => {
 
   const getUserById = async (id: string) => {
     try {
-      return await fetchUserById(id)
+      return await fetchUserById(request, id)  // 👈 On passe request ici
     } catch (err) {
       setError((err as Error).message)
     }
@@ -33,7 +37,7 @@ const useUsersApi = () => {
 
   const createUserHandler = async (data: any) => {
     try {
-      await createUser(data)
+      await createUser(request, data)  // 👈 On passe request ici
       loadUsers()
     } catch (err) {
       setError((err as Error).message)
@@ -42,7 +46,7 @@ const useUsersApi = () => {
 
   const updateUserHandler = async (id: string, data: any) => {
     try {
-      await updateUser(id, data)
+      await updateUser(request, id, data)  // 👈 On passe request ici
       loadUsers()
     } catch (err) {
       setError((err as Error).message)
@@ -51,7 +55,7 @@ const useUsersApi = () => {
 
   const deleteUserHandler = async (id: string) => {
     try {
-      await deleteUser(id)
+      await deleteUser(request, id)  // 👈 On passe request ici
       loadUsers()
     } catch (err) {
       setError((err as Error).message)

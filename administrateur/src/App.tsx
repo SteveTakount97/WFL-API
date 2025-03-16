@@ -21,11 +21,13 @@ import Home from "./pages/Dashboard/Home";
 import UsersPage from "./pages/Admin/Users/UsersPage";
 import DogPage from "./pages/Admin/dog/DogPage";
 import DogFamilyPage from "./pages/Admin/dogfamilie/DogFamilies";
+import { UserProvider } from "./context/UserContext";
 
 
 export default function App() {
   return (
     <>
+    <UserProvider>
       <Router>
         <ScrollToTop />
         <Routes>
@@ -70,6 +72,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
+      </UserProvider> 
     </>
   );
 }
