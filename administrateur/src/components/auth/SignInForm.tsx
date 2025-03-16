@@ -44,12 +44,29 @@ export default function SignInForm() {
       localStorage.setItem("authToken", result.token)
       console.log("User authenticated:", result)
 
-      setUserInfo({
-        firstName: result.firstName,
-        lastName: result.lastName,
-        email: result.email,
-        username: result.username,
-      });
+      if (result.user) {
+        const fullName = result.user.fullName || "";
+        const [firstName = "", lastName = ""] = fullName.split(" ");
+      
+        setUserInfo({
+          firstName,
+          lastName,
+          role: result.user.role,
+          email: result.user.email || "",
+          username: result.user.username || "",
+        });
+      
+        console.log("User info updated:", {
+          firstName,
+          lastName,
+          email: result.user.email,
+          username: result.user.username,
+          role: result.user.role
+        });
+      } else {
+        console.warn("No user data found in response");
+      }
+      
     
       navigate("/") 
     } catch (error) {
