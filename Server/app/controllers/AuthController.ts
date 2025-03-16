@@ -121,15 +121,18 @@ export default class AuthController {
    *                   type: string
    */
   public async login({ request, response }: HttpContext): Promise<void> {
+    const { email, password } = request.only(['email', 'password'])
+
     try {
-      const { email, password } = request.only(['email', 'password']);
-      const { user, token } = await AuthService.authenticateUser(email, password);
-      return response.ok({ token, user });
-    } catch (e) {
-      Sentry.captureException(e);
-      return response.unauthorized({ message: 'Invalid credentials' });
+      const { user, token } = await AuthService.authenticateUser({ email, password })
+
+      return response.ok({ token, user }) // ✅ Réponse HTTP 200 correcte
+    } catch (error) {
+      console.error('Login error:', error.message)
+      return response.unauthorized({ message: 'Invalid credentials' }) // ✅ Réponse HTTP 401 correcte
     }
   }
+
   /**
    * @swagger
    * /auth/logout:

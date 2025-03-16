@@ -29,6 +29,7 @@ export default class AuthService {
       email: data.email,
       username: data.username,
       securekey: securekey, 
+      role: data.role,
       password: hashedPassword,
       identifier: string.random(10),
     })
@@ -36,18 +37,25 @@ export default class AuthService {
     return newUser
   }
 
-  static async authenticateUser(email: string, password: string) {
-    const user = await User.findBy('email', email)
+  static async authenticateUser(data: any) {
+    const user = await User.findBy('email', data.email)
     if (!user) {
       throw new Error('User not found')
     }
 
-    const passwordVerified = await hash.verify(user.password, password)
+    const passwordVerified = await hash.isValidHash(user.password)
+    console.log(`Password match for user ${data.email}: ${passwordVerified}`);
+    console.log('Stored password hash:', user.password); // Affiche le mot de passe stocké
+    console.log('Password entered by user:', data.password); // Affiche le mot de passe entré
+    console.log('Password verified:', passwordVerified);
     if (!passwordVerified) {
-      throw new Error('Invalid credentials')
+      throw new Error('Invalid credentials') 
     }
 
-    const token = await user.use('api').generate()
+    // Générer un token JWT pour l'utilisateur
+    const token = await User.accessTokens.create(user, ['api'], {
+      name: 'API Token',
+    })
 
     if (!user.identifier) {
       user.identifier = string.random(10)
