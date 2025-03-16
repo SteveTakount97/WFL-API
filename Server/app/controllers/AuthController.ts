@@ -126,10 +126,10 @@ export default class AuthController {
     try {
       const { user, token } = await AuthService.authenticateUser({ email, password })
 
-      return response.ok({ token, user }) // ✅ Réponse HTTP 200 correcte
+      return response.ok({ token, user }) // ✅ Réponse 200
     } catch (error) {
       console.error('Login error:', error.message)
-      return response.unauthorized({ message: 'Invalid credentials' }) // ✅ Réponse HTTP 401 correcte
+      return response.unauthorized({ message: 'Invalid credentials' }) //✅ Réponse 401
     }
   }
 
@@ -162,6 +162,7 @@ export default class AuthController {
    */
   public async logout({ auth, response }: HttpContext): Promise<void> {
     try {
+      
       const message = await AuthService.logoutUser(auth);
       return response.ok({ message });
     } catch (e) {

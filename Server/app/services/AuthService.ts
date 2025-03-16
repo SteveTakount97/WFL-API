@@ -71,7 +71,9 @@ export default class AuthService {
   static async logoutUser(auth: any) {
     const user = await auth.use('api').authenticate()
     if (!user) throw new Error('No authenticated user found')
-
+    if (!auth.use('api').isLoggedIn) {
+      throw new Error('User is already logged out')
+    }
     await auth.use('api').revoke()
     return 'Logged out successfully'
   }
