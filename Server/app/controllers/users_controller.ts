@@ -16,6 +16,8 @@ export default class UsersController {
    *     summary: Récupère tous les utilisateurs
    *     tags:
    *       - Utilisateurs
+   *     security:
+ *       - Bearer: []
    *     responses:
    *       200:
    *         description: Liste des utilisateurs
@@ -38,12 +40,19 @@ export default class UsersController {
    *       500:
    *         description: Erreur serveur
    */
-  public async index({ response }: HttpContext) {
+  public async index({ auth, response }: HttpContext) {
     try {
+      // Authentification automatique avec le token envoyé dans le header
+      const user = await auth.use('api').authenticate()
+
+      console.log('Utilisateur authentifié :', user)
+
+      // Si besoin, retourne la liste des utilisateurs ou les détails de l'utilisateur
       const users = await this.userService.getAllUsers()
-      return response.json(users)
+      return response.ok(users)
     } catch (error) {
-      return response.internalServerError({ message: 'Erreur lors de la récupération des utilisateurs', error })
+      console.error('Erreur d’authentification :', error)
+      return response.unauthorized({ message: 'Unauthorized' })
     }
   }
 

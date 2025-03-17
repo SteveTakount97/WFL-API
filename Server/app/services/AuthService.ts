@@ -3,6 +3,7 @@ import hash from '@adonisjs/core/services/hash'
 import string from '@adonisjs/core/helpers/string'
 
 export default class AuthService {
+  
   static async registerUser(data: any) {
     if (!data.username || !data.email || !data.password || !data.full_name || !data.role) {
       throw new Error('Missing required fields')
@@ -19,6 +20,7 @@ export default class AuthService {
     }
 
     const hashedPassword = await hash.make(data.password)
+    
 
      // Générer une secureKey
     const securekey = string.random(12) 
@@ -43,7 +45,7 @@ export default class AuthService {
       throw new Error('User not found')
     }
 
-    const passwordVerified = await hash.isValidHash(user.password)
+    const passwordVerified = await hash.verify(data.password, user.password)
     console.log(`Password match for user ${data.email}: ${passwordVerified}`);
     console.log('Stored password hash:', user.password); // Affiche le mot de passe stocké
     console.log('Password entered by user:', data.password); // Affiche le mot de passe entré

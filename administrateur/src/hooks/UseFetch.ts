@@ -19,10 +19,9 @@ export const useFetch = () => {
       const res = await fetch(`${BASE_URL}${url}`, {
         ...options,
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-          ...options.headers,
-        },
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // 
+          },
       })
        
       console.log('Fetch response:', res);

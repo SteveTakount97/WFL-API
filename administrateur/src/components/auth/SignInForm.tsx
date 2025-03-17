@@ -23,7 +23,7 @@ export default function SignInForm() {
       const response = await fetch("http://localhost:3333/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({ email, password }),
       })
@@ -41,8 +41,10 @@ export default function SignInForm() {
       }
     
       const result = await response.json()
-      localStorage.setItem("authToken", result.token)
-      console.log("User authenticated:", result)
+      const token = result.token?.token
+      console.log('Token', token)
+      localStorage.setItem("authToken", token)
+      console.log(localStorage.getItem('authToken'))
 
       if (result.user) {
         const fullName = result.user.fullName || "";

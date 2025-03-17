@@ -20,8 +20,11 @@ export default class AuthMiddleware {
     } = {}
   ) {
     try {
+      const guards = options.guards || ['api']
       //Vérifie si l'utilisateur est authentifié
-      await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
+      await ctx.auth.authenticateUsing(guards, { loginRoute: this.redirectTo })
+      console.log('🔑 Received token:', ctx.request.header('Authorization'))
+
 
       //Si l'utilisateur est authentifié, passe à la suite
       await next()
