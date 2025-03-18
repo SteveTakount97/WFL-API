@@ -1,6 +1,6 @@
 import User from '#models/user' 
-import hash from '@adonisjs/core/services/hash'
 import string from '@adonisjs/core/helpers/string'
+import { error } from 'console'
 
 export default class AuthService {
   
@@ -18,8 +18,6 @@ export default class AuthService {
     if (existingUserName) {
       throw new Error('First name already exists')
     }
-
-    const hashedPassword = await hash.make(data.password)
     
 
      // Générer une secureKey
@@ -32,36 +30,29 @@ export default class AuthService {
       username: data.username,
       securekey: securekey, 
       role: data.role,
-      password: hashedPassword,
-      identifier: string.random(10),
+      password: data.password
     })
 
     return newUser
   }
 
   static async authenticateUser(data: any) {
-    const user = await User.findBy('email', data.email)
-    if (!user) {
-      throw new Error('User not found')
+     // Validation de base
+    if (!data.email || !data.password) {
+      throw  error('Email and password are required', 400)
     }
 
-    const passwordVerified = await hash.verify(data.password, user.password)
-    console.log(`Password match for user ${data.email}: ${passwordVerified}`);
-    console.log('Stored password hash:', user.password); // Affiche le mot de passe stocké
-    console.log('Password entered by user:', data.password); // Affiche le mot de passe entré
-    console.log('Password verified:', passwordVerified);
-    if (!passwordVerified) {
-      throw new Error('Invalid credentials') 
+    const user = await User.verifyCredentials(data.email, data.password)
+    if (!user) {
+      throw new Error('User not found')
     }
 
     // Générer un token JWT pour l'utilisateur
     const token = await User.accessTokens.create(user, ['api'], {
       name: 'API Token',
     })
-
-    if (!user.identifier) {
-      user.identifier = string.random(10)
-      await user.save()
+    
+    if (!user) {
       await this.regenerateSecureKey(user)
     } else {
       await user.save()
