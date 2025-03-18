@@ -120,13 +120,15 @@ export default class AuthController {
    *                 message:
    *                   type: string
    */
-  public async login({ request, response }: HttpContext): Promise<void> {
+  public async login({ request, auth, response }: HttpContext): Promise<void> {
     const { email, password } = request.only(['email', 'password'])
 
     try {
       const { user, token } = await AuthService.authenticateUser({ email, password })
-
+      // Authentification réussie, on génère une session
+      await auth.use('session').login(user)
       return response.ok({ token, user }) // ✅ Réponse 200
+      
     } catch (error) {
       console.error('Login error:', error.message)
       return response.unauthorized({ message: 'Invalid credentials' }) //✅ Réponse 401
@@ -164,6 +166,7 @@ export default class AuthController {
     try {
       
       const message = await AuthService.logoutUser(auth);
+      await auth.use('session').logout()
       return response.ok({ message });
     } catch (e) {
       Sentry.captureException(e);

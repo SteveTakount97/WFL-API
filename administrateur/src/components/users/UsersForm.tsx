@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import useUsersApi from '../../api/UserApi'
 import { toast } from 'react-toastify'
+import { useUsersApi } from '../../api/UserApi'// Assure-toi que le hook `useUsersApi` est bien importé.
 
 interface User {
   full_name: string
@@ -10,7 +10,7 @@ interface User {
 
 const UserForm = () => {
   const { id } = useParams<{ id: string }>()
-  const { getUserById, updateUserHandler } = useUsersApi()
+  const { getUserById, updateUserHandler, searchUserHandler } = useUsersApi()
 
   const [user, setUser] = useState<User>({ full_name: '', email: '' })
   const [loading, setLoading] = useState(false)
@@ -22,7 +22,7 @@ const UserForm = () => {
     if (id) {
       loadUserById()
     } else if (searchQuery) {
-      loadUserById()
+      loadUserBySearch()
     }
 
     // Cleanup de la requête si le composant est démonté
@@ -46,16 +46,21 @@ const UserForm = () => {
     }
   }
 
-  //  Charge un utilisateur par `full_name` ou `email`
-  /**
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   */ 
-  // Soumission du formulaire pour mettre à jour 
+  // Charge un utilisateur par `full_name` ou `email` via la recherche
+  const loadUserBySearch = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const data = await searchUserHandler(searchQuery)
+      setUser(data)
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Soumission du formulaire pour mettre à jour ou créer un utilisateur
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -133,7 +138,7 @@ const UserForm = () => {
           disabled={loading}
           className={`w-full p-2 rounded-md bg-blue-500 text-white font-semibold ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
         >
-          {loading ? 'Traitement...' : id ? 'Update User' : 'Seach User'}
+          {loading ? 'Traitement...' : id ? 'Mettre à jour l\'utilisateur' : 'Rechercher un utilisateur'}
         </button>
       </form>
     </div>

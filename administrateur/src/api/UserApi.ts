@@ -1,68 +1,39 @@
-import { useState, useEffect } from 'react'
-import { fetchUsers, fetchUserById, createUser, updateUser, deleteUser } from '../services/userServices'
-import useFetch from '../hooks/UseFetch'
+import useFetch from "../hooks/UseFetch"
 
-const useUsersApi = () => {
-  const { request } = useFetch()  
-  console.log('Request function:', request);
-
-  const [users, setUsers] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    loadUsers()
-  }, [])
-
-  const loadUsers = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const data = await fetchUsers(request)  
-      setUsers(data)
-    } catch (err) {
-      setError((err as Error).message)
-    } finally {
-      setLoading(false)
-    }
-  }
+export const useUsersApi = () => {
+  const { request, loading, error } = useFetch()
 
   const getUserById = async (id: string) => {
     try {
-      return await fetchUserById(request, id)  // 👈 On passe request ici
+      const data = await request(`/users/${id}`, { method: 'GET' })
+      return data
     } catch (err) {
-      setError((err as Error).message)
+      throw new Error('Erreur lors de la récupération de l\'utilisateur')
     }
   }
 
-  const createUserHandler = async (data: any) => {
+  const updateUserHandler = async (id: string, user: { full_name: string, email: string }) => {
     try {
-      await createUser(request, data)  // 👈 On passe request ici
-      loadUsers()
+      const method = id ? 'PUT' : 'POST'
+      const url = id ? `/users/${id}` : '/users'
+      const data = await request(url, {
+        method,
+        body: JSON.stringify(user),
+      })
+      return data
     } catch (err) {
-      setError((err as Error).message)
+      throw new Error('Erreur lors de la mise à jour ou création de l\'utilisateur')
     }
   }
 
-  const updateUserHandler = async (id: string, data: any) => {
+  const searchUserHandler = async (query: string) => {
     try {
-      await updateUser(request, id, data)  // 👈 On passe request ici
-      loadUsers()
+      const data = await request(`/users/search?query=${query}`, { method: 'GET' })
+      return data
     } catch (err) {
-      setError((err as Error).message)
+      throw new Error('Erreur lors de la recherche de l\'utilisateur')
     }
   }
 
-  const deleteUserHandler = async (id: string) => {
-    try {
-      await deleteUser(request, id)  // 👈 On passe request ici
-      loadUsers()
-    } catch (err) {
-      setError((err as Error).message)
-    }
-  }
- 
-  return { users, loading, error, getUserById, createUserHandler, updateUserHandler, deleteUserHandler }
+  return { getUserById, updateUserHandler, searchUserHandler, loading, error }
 }
-
-export default useUsersApi

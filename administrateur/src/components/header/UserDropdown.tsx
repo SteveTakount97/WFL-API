@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useUser } from "../../context/UserContext";
+import { toast } from "react-toastify";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { firstName, lastName, email} = useUser();
+  const navigate = useNavigate();
   function toggleDropdown() {
     setIsOpen(!isOpen);
   }
@@ -15,28 +17,38 @@ export default function UserDropdown() {
     setIsOpen(false);
   }
   const handleLogout = async () => {
+   
     try {
+      const token = localStorage.getItem('authToken') 
       const response = await fetch('http://localhost:3333/auth/logout', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Récupère le token du localStorage
+          'Authorization': `Bearer ${token}`, // Récupère le token du localStorage
           'Content-Type': 'application/json'
         }
       })
   
       if (!response.ok) {
-        throw new Error('Failed to log out')
+        const errorData = await response.json()
+        console.error('Erreur de déconnexion:', errorData)
+        throw new Error(errorData.message || 'Erreur inconnue')
       }
+  
   
       // Suppression du token après la déconnexion réussie
       localStorage.removeItem('token')
+
+      toast.success('Déconnexion réussie !')
   
       // Redirige vers la page de connexion après la déconnexion
-      window.location.href = '/signup'
+       navigate("/signin")
+     
     } catch (error) {
-      console.error('Logout error:', error)
+      console.error('Erreur lors de la déconnexion:', error)
+      toast.error('Une erreur est survenue lors de la déconnexion.')
     }
   }
+  
   
   return (
     <div className="relative">

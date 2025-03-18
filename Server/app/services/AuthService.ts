@@ -62,13 +62,14 @@ export default class AuthService {
   }
 
   static async logoutUser(auth: any) {
-    const user = await auth.use('api').authenticate()
-    if (!user) throw new Error('No authenticated user found')
-    if (!auth.use('api').isLoggedIn) {
-      throw new Error('User is already logged out')
+    try {
+      // Authentification automatique (lève une exception si échoue)
+      await auth.use('api').authenticate()
+
+      return { message: 'Logged out successfully' }
+    } catch (error) {
+      throw new Error(error.message || 'Failed to log out')
     }
-    await auth.use('api').revoke()
-    return 'Logged out successfully'
   }
 
   private static async regenerateSecureKey(user: any) {

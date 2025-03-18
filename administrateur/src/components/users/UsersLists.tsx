@@ -1,26 +1,28 @@
-import { useEffect } from 'react'
-import useUsersApi from '../../api/UserApi'
-
+import { useEffect, useState } from 'react'
+import { useUserService } from '../../services/userServices'
 
 
 
 const UserList = () => {
-  const { users, loading, error, deleteUserHandler } = useUsersApi()  // On utilise useUsersApi()
+  const { fetchUsers, loading, error } = useUserService()
+  const [users, setUsers] = useState<any[]>([])
 
   useEffect(() => {
-    // fetchUsers est déjà géré dans useUsersApi
-  }, [])
-
-  // Suppression directe dans l'état local après suppression API
-  const handleDelete = async (id: string) => {
-    if (confirm('Voulez-vous supprimer cet utilisateur ?')) {
+    const loadUsers = async () => {
       try {
-        await deleteUserHandler(id)  // ✅ On passe par useUsersApi
-      } catch (error) {
-        console.error("Erreur lors de la suppression de l'utilisateur:", error)
+        const data = await fetchUsers()
+        setUsers(data)
+      } catch (err) {
+        console.error('Erreur lors du chargement des utilisateurs', err)
       }
     }
-  }
+
+    loadUsers()
+  }, [fetchUsers])
+
+  if (loading) return <p>Chargement des utilisateurs...</p>
+  if (error) return <p>Erreur: {error}</p>
+
 
   return (
     <div>
@@ -44,7 +46,7 @@ const UserList = () => {
               <td className="border p-2">{user.email}</td>
               <td className="border p-2">
                 <button
-                  onClick={() => handleDelete(user.id)}
+                
                   className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded transition duration-200"
                 >
                   Supprimer

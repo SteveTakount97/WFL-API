@@ -39,7 +39,7 @@ export default function SignInForm() {
         setError(errorResult.message || "Login failed")
         return
       }
-    
+      
       const result = await response.json()
       const token = result.token?.token
       console.log('Token', token)
