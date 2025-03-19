@@ -17,11 +17,11 @@ const handleTokenError = (error: Error) => {
 // Fonction pour vérifier et décoder le token
 const decodeToken = (token: string) => {
   if (token.startsWith('oat_')) {
-    const cleanedToken = token.slice(4);  // Retirer le préfixe "oat_"
+    const cleanedToken = token.slice(4); 
     try {
       // Décoder le token nettoyé
       const decodedToken = Base64.decode(cleanedToken);
-      return JSON.parse(decodedToken);  // On suppose ici que le payload est un JSON
+      return JSON.parse(decodedToken);  
     } catch (error) {
       throw new Error('Erreur lors du décodage du token.');
     }
@@ -66,7 +66,7 @@ api.interceptors.request.use(
       } else {
         console.error('Erreur inconnue:', error);
       }
-      return Promise.reject(error);  // Relancer l'erreur pour qu'Axios puisse la gérer
+      return Promise.reject(error);  
     }
   },
   (error) => {
