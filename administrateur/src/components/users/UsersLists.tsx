@@ -1,34 +1,29 @@
-import { useEffect, useState } from 'react'
-import { useUserService } from '../../services/userServices'
-
-
+import { useState } from 'react';
+import { useUserApi } from '../../api/userApi';
 
 const UserList = () => {
-  const { fetchUsers, loading, error } = useUserService()
-  const [users, setUsers] = useState<any[]>([])
+  const { fetchUsers, loading, error } = useUserApi();
+  const [users, setUsers] = useState<any[]>([]);
 
-  useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        const data = await fetchUsers()
-        setUsers(data)
-      } catch (err) {
-        console.error('Erreur lors du chargement des utilisateurs', err)
-      }
+  const loadUsers = async () => {
+    try {
+      const data = await fetchUsers();
+      setUsers(data);
+    } catch (err) {
+      console.error('Erreur lors du chargement des utilisateurs', err);
     }
-
-    loadUsers()
-  }, [fetchUsers])
-
-  if (loading) return <p>Chargement des utilisateurs...</p>
-  if (error) return <p>Erreur: {error}</p>
-
+  };
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Liste des utilisateurs</h2>
-      {loading && <p>Chargement...</p>}
-      {error && <p className="text-red-500">Erreur : {error}</p>}
+      <button
+        onClick={loadUsers}
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-colors duration-300"
+      >
+        Charger les utilisateurs
+      </button>
+      {loading && <p>Chargement des utilisateurs...</p>}
+      {error && <p>Erreur: {error}</p>}
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>

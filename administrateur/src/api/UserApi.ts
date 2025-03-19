@@ -1,39 +1,84 @@
-import useFetch from "../hooks/UseFetch"
+import { useState } from "react"
+import { fetchUsersApi, fetchUserByIdApi, createUserApi, updateUserApi, deleteUserApi } from '../services/userServices'
 
-export const useUsersApi = () => {
-  const { request, loading, error } = useFetch()
+export const useUserApi = () => {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const getUserById = async (id: string) => {
+  // Récupérer la liste des utilisateurs
+  const fetchUsers = async () => {
+    setLoading(true)
+    setError(null)
     try {
-      const data = await request(`/users/${id}`, { method: 'GET' })
+      const data = await fetchUsersApi()
       return data
-    } catch (err) {
-      throw new Error('Erreur lors de la récupération de l\'utilisateur')
+    } catch (err: any) {
+      setError('Erreur lors de la récupération des utilisateurs')
+      throw new Error(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const updateUserHandler = async (id: string, user: { full_name: string, email: string }) => {
+  // Récupérer un utilisateur par ID
+  const fetchUserById = async (id: string) => {
+    setLoading(true)
+    setError(null)
     try {
-      const method = id ? 'PUT' : 'POST'
-      const url = id ? `/users/${id}` : '/users'
-      const data = await request(url, {
-        method,
-        body: JSON.stringify(user),
-      })
+      const data = await fetchUserByIdApi(id)
       return data
-    } catch (err) {
-      throw new Error('Erreur lors de la mise à jour ou création de l\'utilisateur')
+    } catch (err: any) {
+      setError(`Erreur lors de la récupération de l'utilisateur avec l'id ${id}`)
+      throw new Error(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const searchUserHandler = async (query: string) => {
+  // Créer un utilisateur
+  const createUser = async () => {
+    setLoading(true)
+    setError(null)
     try {
-      const data = await request(`/users/search?query=${query}`, { method: 'GET' })
-      return data
-    } catch (err) {
-      throw new Error('Erreur lors de la recherche de l\'utilisateur')
+      const res = await createUserApi()
+      return res
+    } catch (err: any) {
+      setError('Erreur lors de la création de l\'utilisateur')
+      throw new Error(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
-  return { getUserById, updateUserHandler, searchUserHandler, loading, error }
+  // Mettre à jour un utilisateur
+  const updateUser = async (id: string) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await updateUserApi(id)
+      return res
+    } catch (err: any) {
+      setError('Erreur lors de la mise à jour de l\'utilisateur')
+      throw new Error(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Supprimer un utilisateur
+  const deleteUser = async (id: string) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await deleteUserApi(id)
+      return res
+    } catch (err: any) {
+      setError('Erreur lors de la suppression de l\'utilisateur')
+      throw new Error(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { fetchUsers, fetchUserById, createUser, updateUser, deleteUser, loading, error }
 }

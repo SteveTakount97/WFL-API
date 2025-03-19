@@ -48,9 +48,7 @@ export default class AuthService {
     }
 
     // Générer un token JWT pour l'utilisateur
-    const token = await User.accessTokens.create(user, ['api'], {
-      name: 'API Token',
-    })
+    const token = await User.accessTokens.create(user)
     
     if (!user) {
       await this.regenerateSecureKey(user)
@@ -58,7 +56,12 @@ export default class AuthService {
       await user.save()
     }
 
-    return { user, token }
+    return {
+      user,
+      token,
+      type: 'bearer',
+      value: token.value!.release(),
+    }
   }
 
   static async logoutUser(auth: any) {

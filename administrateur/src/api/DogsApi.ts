@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
-import useFetch from '../hooks/UseFetch';
 import { getAllDogs, getDogById, createDog, updateDog, deleteDog } from '../services/dogService';
 
+interface Dog {
+  id?: string;
+  name: string;
+  breed: string;
+  age: number;
+}
+
 const useDogsApi = () => {
-  const { request } = useFetch();
-  const [dogs, setDogs] = useState<any[]>([]);
+  const [dogs, setDogs] = useState<Dog[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,11 +17,12 @@ const useDogsApi = () => {
     loadDogs();
   }, []);
 
+  // Charger tous les chiens
   const loadDogs = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getAllDogs(request);
+      const data = await getAllDogs();
       setDogs(data);
     } catch (err) {
       setError((err as Error).message);
@@ -25,35 +31,39 @@ const useDogsApi = () => {
     }
   };
 
+  // Obtenir un chien par son ID
   const getDogByIdHandler = async (id: string) => {
     try {
-      return await getDogById(request, id);
+      return await getDogById(id);
     } catch (err) {
       setError((err as Error).message);
     }
   };
 
-  const createDogHandler = async (data: any) => {
+  // Créer un chien
+  const createDogHandler = async (dog: Dog) => {
     try {
-      await createDog(request, data);
+      await createDog(dog);
       loadDogs();
     } catch (err) {
       setError((err as Error).message);
     }
   };
 
-  const updateDogHandler = async (request: (url: string, options?: RequestInit) => Promise<any>, id: string, data: any) => {
+  // Mettre à jour un chien
+  const updateDogHandler = async (id: string, dogData: Dog) => {
     try {
-      await updateDog(request, id, data);
+      await updateDog(id, dogData);
       loadDogs();
     } catch (err) {
       setError((err as Error).message);
     }
   };
 
+  // Supprimer un chien
   const deleteDogHandler = async (id: string) => {
     try {
-      await deleteDog(request, id);
+      await deleteDog(id);
       loadDogs();
     } catch (err) {
       setError((err as Error).message);

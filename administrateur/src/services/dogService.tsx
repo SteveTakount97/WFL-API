@@ -1,45 +1,62 @@
-const API_URL = '/admin/dogs'
+const API_URL = '/admin/dogs';
+import api from "../axiosIntance/IntercepteurToken";
 
-export const getAllDogs = async (request: (url: string, options?: RequestInit) => Promise<Response>) => {
-  const response = await request(API_URL);
-  if (!response.ok) throw new Error('Erreur lors de la récupération des chiens');
-  return await response.json();
+// Fonction pour gérer les appels GET
+const fetchData = async (url: string) => {
+  try {
+    const response = await api.get(url);
+    if (response.status !== 200) throw new Error(`Erreur: ${response.status}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Erreur lors de la récupération des données: ${error}`);
+  }
 };
 
-export const getDogById = async (request: (url: string, options?: RequestInit) => Promise<Response>, id: string) => {
-  const response = await request(`${API_URL}/${id}`);
-  if (!response.ok) throw new Error(`Erreur lors de la récupération du chien avec l'ID ${id}`);
-  return await response.json();
+// Fonctio pour gérer les appels POST/PUT
+const postData = async (url: string, data: any, method: 'POST' | 'PUT') => {
+  try {
+    const response = await api({
+      method,
+      url,
+      data,
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (response.status !== 200) throw new Error(`Erreur: ${response.status}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Erreur lors de la ${method === 'POST' ? 'création' : 'mise à jour'} du chien: ${error}`);
+  }
 };
 
-export const createDog = async (
-  request: (url: string, options?: RequestInit) => Promise<Response>,
-  dogData: { name: string; breed: string; age: number }
-) => {
-  const response = await request(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'token': 'bear' },
-    body: JSON.stringify(dogData),
-  });
-  if (!response.ok) throw new Error('Erreur lors de la création du chien');
-  return await response.json();
+// Fonction pour récupérer tous les chiens
+export const getAllDogs = async () => {
+  return await fetchData(API_URL);
 };
 
+// Fonction pour récupérer un chien par son ID
+export const getDogById = async (id: string) => {
+  return await fetchData(`${API_URL}/${id}`);
+};
+
+// Fonction pour créer un chien
+export const createDog = async (dogData: { name: string; breed: string; age: number }) => {
+  return await postData(API_URL, dogData, 'POST');
+};
+
+// Fonction pour mettre à jour un chien
 export const updateDog = async (
-  request: (url: string, options?: RequestInit) => Promise<Response>,
   id: string,
   dogData: { name: string; breed: string; age: number }
 ) => {
-  const response = await request(`${API_URL}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dogData),
-  });
-  if (!response.ok) throw new Error(`Erreur lors de la mise à jour du chien avec l'ID ${id}`);
-  return await response.json();
+  return await postData(`${API_URL}/${id}`, dogData, 'PUT');
 };
 
-export const deleteDog = async (request: (url: string, options?: RequestInit) => Promise<Response>, id: string) => {
-  const response = await request(`${API_URL}/${id}`, { method: 'DELETE' });
-  if (!response.ok) throw new Error(`Erreur lors de la suppression du chien avec l'ID ${id}`);
+// Fonction pour supprimer un chien
+export const deleteDog = async (id: string) => {
+  try {
+    const response = await api.delete(`${API_URL}/${id}`);
+    if (response.status !== 200)throw new Error(`Erreur: ${response.status}`);
+  } catch (error) {
+    throw new Error(`Erreur lors de la suppression du chien avec l'ID ${id}: ${error}`);
+  }
 };

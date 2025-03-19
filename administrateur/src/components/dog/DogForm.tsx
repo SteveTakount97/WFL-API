@@ -1,4 +1,3 @@
-import useFetch from '../../hooks/UseFetch';
 import { useEffect, useState } from 'react';
 import useDogsApi from '../../api/DogsApi';
 import { toast } from 'react-toastify';
@@ -18,44 +17,71 @@ interface DogFormProps {
 const DogForm: React.FC<DogFormProps> = ({ selectedDog, onReset }) => {
   const [dog, setDog] = useState<Dog>({ name: '', breed: '', age: 0 });
   const [loading, setLoading] = useState(false);
-  const { request } = useFetch();
   const { updateDogHandler, createDogHandler } = useDogsApi();
 
+  // Remplit le formulaire si un chien est sélectionné
   useEffect(() => {
     if (selectedDog) {
-      setDog({ name: selectedDog.name, breed: selectedDog.breed, age: selectedDog.age });
+      setDog(selectedDog);
+    } else {
+      resetForm(); // Réinitialisation si aucun chien sélectionné
     }
   }, [selectedDog]);
 
+  // Met à jour l'état lors de la saisie dans le formulaire
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDog((prevDog) => ({
       ...prevDog,
-      [name]: name === 'age' ? Number(value) : value, // ✅ Convertit 'age' en nombre
+      [name]: name === 'age' ? Number(value) : value.trim(),
     }));
   };
 
+  // Vérifie des champs valides
+  const isValid = () => {
+    if (!dog.name.trim()) {
+      toast.error('Le nom est obligatoire');
+      return false;
+    }
+    if (!dog.breed.trim()) {
+      toast.error('La race est obligatoire');
+      return false;
+    }
+    if (dog.age <= 0) {
+      toast.error('L\'âge doit être supérieur à zéro');
+      return false;
+    }
+    return true;
+  };
+
+  //Réinitialisation du formulaire
+  const resetForm = () => {
+    setDog({ name: '', breed: '', age: 0 });
+  };
+
+  //Soumission du formulaire (Création ou mise à jour)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValid()) return;
+
     setLoading(true);
 
     try {
-      console.log('Request:', request);
-      console.log('Dog Data:', dog);
-      if (selectedDog) {
-        console.log('Updating Dog ID:', selectedDog.id);
-        if (!selectedDog.id) throw new Error('ID du chien manquant');
-        await updateDogHandler(request, selectedDog.id, dog);
+      if (selectedDog && selectedDog.id) {
+        console.log(`Updating Dog ID: ${selectedDog.id}`);
+        await updateDogHandler(selectedDog.id, dog); // ✅ Passage des données
         toast.success('Chien mis à jour avec succès !');
       } else {
         console.log('Creating New Dog');
-        await createDogHandler(request, dog);
+        await createDogHandler(dog);
         toast.success('Chien ajouté avec succès !');
       }
-      onReset();
+
+      onReset(); // Réinitialisation après soumission
+      resetForm(); // Nettoyage du formulaire
     } catch (err) {
       console.error('Erreur dans handleSubmit:', err);
-      toast.error('Une erreur est survenue.');
+      toast.error((err as Error).message || 'Une erreur est survenue.');
     } finally {
       setLoading(false);
     }

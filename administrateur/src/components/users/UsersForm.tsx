@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useUsersApi } from '../../api/UserApi'// Assure-toi que le hook `useUsersApi` est bien importé.
+import { useUserApi } from '../../api/userApi'
 
 interface User {
   full_name: string
@@ -10,7 +10,7 @@ interface User {
 
 const UserForm = () => {
   const { id } = useParams<{ id: string }>()
-  const { getUserById, updateUserHandler, searchUserHandler } = useUsersApi()
+  const { fetchUserById, fetchUsers, updateUser, createUser } = useUserApi()
 
   const [user, setUser] = useState<User>({ full_name: '', email: '' })
   const [loading, setLoading] = useState(false)
@@ -22,7 +22,7 @@ const UserForm = () => {
     if (id) {
       loadUserById()
     } else if (searchQuery) {
-      loadUserBySearch()
+      fetchUsers()
     }
 
     // Cleanup de la requête si le composant est démonté
@@ -37,7 +37,7 @@ const UserForm = () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await getUserById(id!)
+      const data = await fetchUserById(id!)
       setUser(data)
     } catch (err) {
       setError((err as Error).message)
@@ -47,18 +47,18 @@ const UserForm = () => {
   }
 
   // Charge un utilisateur par `full_name` ou `email` via la recherche
-  const loadUserBySearch = async () => {
+ /* const loadUserBySearch = async () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await searchUserHandler(searchQuery)
+      const data = await updateUser(id)
       setUser(data)
     } catch (err) {
       setError((err as Error).message)
     } finally {
       setLoading(false)
     }
-  }
+  }*/
 
   // Soumission du formulaire pour mettre à jour ou créer un utilisateur
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,11 +74,11 @@ const UserForm = () => {
     try {
       if (id) {
         // Mise à jour de l'utilisateur
-        await updateUserHandler(id!, user)
+        await updateUser(id!)
         toast.success('Utilisateur mis à jour avec succès !')
       } else {
         // Création d'un nouvel utilisateur (si aucun `id`)
-        await updateUserHandler('', user) // Modifier selon l'API pour création
+        await createUser() // Modifier selon l'API pour création
         toast.success('Utilisateur créé avec succès !')
       }
     } catch (err) {

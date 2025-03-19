@@ -41,7 +41,7 @@ export default function SignInForm() {
       }
       
       const result = await response.json()
-      const token = result.token?.token
+      const token = result.token.token
       console.log('Token', token)
       localStorage.setItem("authToken", token)
       console.log(localStorage.getItem('authToken'))
