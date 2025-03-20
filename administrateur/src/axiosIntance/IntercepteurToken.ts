@@ -1,9 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
-import { jwtDecode } from 'jwt-decode';
 
-interface Token {
-  exp: number;
-}
+
+
 
 const api = axios.create({
   baseURL: 'http://localhost:3333/api', 
@@ -14,25 +12,13 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
   if (token) {
     try {
-      // ✅ Vérification correcte du token
-
-      const user = jwtDecode<Token>(token);
-      const now = Date.now().valueOf() / 1000;
-
-      if (user.exp < now) {
-        console.log('Token expiré');
-      //  localStorage.removeItem('authToken');
-      //  localStorage.setItem('redirectUrl', window.location.href);
-      //  window.location.href = '/login';
-      } else {
-        config.headers.Authorization = `Bearer ${token}`; //Ajout du token dans le header
-      }
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log('Token envoyé dans le header:', config.headers.Authorization);
     } catch (error) {
       console.error('Erreur lors du décodage du token :', error);
-     // localStorage.removeItem('token');
-      //localStorage.setItem('redirectUrl', window.location.href);
-      //window.location.href = '/login';
     }
+  } else {
+    console.warn(' Aucun token trouvé dans le localStorage');
   }
 
   return config;
