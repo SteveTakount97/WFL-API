@@ -5,9 +5,12 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useUser } from "../../context/UserContext";
 
+
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const { firstName, lastName, username, role} = useUser();
+  const {user} = useUser();
+    // Si le user est null, ne rien afficher
+    if (!user) return null;
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
@@ -23,15 +26,15 @@ export default function UserMetaCard() {
             </div>
             <div className="order-3 xl:order-2">
               <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
-                {firstName}-{lastName}
+              {user?.firstName} - {user?.lastName}
               </h4>
               <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                 {role}
+                 {user.role}
                 </p>
                 <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                 {username}
+                 {user.username}
                 </p>
               </div>
             </div>

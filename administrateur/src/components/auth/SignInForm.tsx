@@ -8,7 +8,7 @@ import Button from "../ui/button/Button";
 import { useUser } from "../../context/UserContext";
 
 export default function SignInForm() {
-  const { setUserInfo } = useUser(); 
+  const { setUser} = useUser(); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +50,7 @@ export default function SignInForm() {
         const fullName = result.user.fullName || "";
         const [firstName = "", lastName = ""] = fullName.split(" ");
       
-        setUserInfo({
+        setUser({
           firstName,
           lastName,
           role: result.user.role,

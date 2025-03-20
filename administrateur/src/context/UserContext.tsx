@@ -1,41 +1,73 @@
-import { createContext, useState, useContext, ReactNode } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react'
+import { getMeFromApi } from '../services/userServices'
 
-interface UserContextType {
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
-  role: string;
-  setUserInfo: (userInfo: Partial<UserContextType>) => void;
+// Type utilisateur correctement défini
+interface User {
+  firstName: string
+  lastName: string
+  email: string
+  username: string
+  role: string
 }
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+// Type du contexte utilisateur
+interface UserContextValue {
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+    role: string;
+  } | null;
+  setUser: (user: any) => void;
+}
+// Crée un contexte avec le type UserContextType
+const UserContext = createContext<UserContextValue | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [userInfo, setUserInfo] = useState<Omit<UserContextType, 'setUserInfo'>>({
-      firstName: '',
-      lastName: '',
-      email: '',
-      username: '',
-      role: '',
-    });
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null)
 
-  const updateUserInfo = (newUserInfo: Partial<UserContextType>) => {
-    setUserInfo((prev) => ({ ...prev, ...newUserInfo }));
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const userData = await getMeFromApi()
+      // Vérifie et divise le nom
+      const fullName = userData.full_name || "";
+      const nameParts = fullName.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts[1] || "";
+
+      const normalizedUser = {
+        firstName,
+        lastName,
+        email: userData.email,
+        username: userData.username,
+        role: userData.role,
+      };
+
+      setUser(normalizedUser);
+      console.log('données du context', user)
+      localStorage.setItem("user", JSON.stringify(normalizedUser));
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'utilisateur :", error);
+    }
   };
 
+  loadUser();
+  }, [])
 
   return (
-    <UserContext.Provider value={{ ...userInfo, setUserInfo: updateUserInfo }}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
-  );
-};
+  )
+}
 
-export const useUser = () => {
-  const context = useContext(UserContext);
+// Hook personnalisé pour accéder au contexte utilisateur
+export const useUser = (): UserContextValue => {
+  const context = useContext(UserContext)
   if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error('useUser must be used within a UserProvider')
   }
-  return context;
-};
+  return context
+}

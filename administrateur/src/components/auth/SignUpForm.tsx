@@ -7,7 +7,7 @@ import Checkbox from "../form/input/Checkbox";
 import { useUser } from "../../context/UserContext";
 
 export default function SignUpForm() {
-  const { setUserInfo } = useUser(); // Accès au contexte
+  const {setUser} = useUser()// Accès au contexte
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -48,23 +48,18 @@ export default function SignUpForm() {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to sign up");
-      }
-
-      // ✅ Mettre à jour le contexte après une inscription réussie
-      setUserInfo({
+      // ✅ Mettre à jour le contexte après l'inscription réussie
+      setUser({
         firstName,
         lastName,
         email,
         username,
-      });
+        role
+      })
 
-      setEmail("");
-      setPassword("");
-      setFirstName("");
-      setLastName("");
-      setUsername("");
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to sign up");
+      }
 
       navigate('/signin');
       alert("Sign up successful!");

@@ -7,7 +7,7 @@ import { useUser } from "../../context/UserContext";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const { firstName, lastName, email, username } = useUser();
+  const { user } = useUser();
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
@@ -27,7 +27,7 @@ export default function UserInfoCard() {
                 First Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-              {firstName}
+              {user?.firstName}
               </p>
             </div>
 
@@ -36,7 +36,7 @@ export default function UserInfoCard() {
                 Last Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-              {lastName}
+              {user?.lastName}
               </p>
             </div>
 
@@ -45,7 +45,7 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-              {email}
+              {user?.email}
               </p>
             </div>
 
@@ -54,7 +54,7 @@ export default function UserInfoCard() {
                 Username
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-              {username}
+              {user?.username}
               </p>
             </div>
 
