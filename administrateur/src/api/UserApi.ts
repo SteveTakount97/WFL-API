@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { fetchUsersApi, fetchUserByIdApi, createUserApi, updateUserApi, deleteUserApi } from '../services/userServices'
+import { fetchUsersApi, fetchUserByIdApi, createUserApi, updateUserApi, deleteUserApi, getMeFromApi } from '../services/userServices'
 
 export const useUserApi = () => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -49,6 +49,22 @@ export const useUserApi = () => {
       setLoading(false)
     }
   }
+  //Function pour recup les infos du user
+  const getUserData = async () => {
+    try {
+      const userData = await getMeFromApi();
+  
+      if (!userData) {
+        throw new Error('Aucune donnée utilisateur trouvée');
+      }
+  
+      console.log('Données utilisateur traitées :', userData);
+      return userData;
+    } catch (error) {
+      console.error('Erreur dans la logique métier :', error);
+      throw error;
+    }
+  };
 
   // Mettre à jour un utilisateur
   const updateUser = async (id: string) => {
@@ -80,5 +96,5 @@ export const useUserApi = () => {
     }
   }
 
-  return { fetchUsers, fetchUserById, createUser, updateUser, deleteUser, loading, error }
+  return { fetchUsers, fetchUserById, createUser, updateUser, deleteUser, getUserData, loading, error }
 }

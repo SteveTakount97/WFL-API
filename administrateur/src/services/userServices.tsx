@@ -12,6 +12,18 @@ export const fetchUsersApi = async () => {
   }
 }
 
+//Fonction me
+export const getMeFromApi = async () => {
+  try {
+    const response = await api.get('auth/me');
+    console.log('Données utilisateur récupérées depuis l’API :', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des données depuis l’API :', error);
+    throw error;
+  }
+};
+
 // Fonction pour récupérer un utilisateur par ID
 export const fetchUserByIdApi = async (id: string) => {
   try {
@@ -60,3 +72,4 @@ export const deleteUserApi = async (id: string) => {
     throw new Error('Erreur lors de la suppression de l\'utilisateur')
   }
 }
+

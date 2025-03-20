@@ -173,4 +173,63 @@ export default class AuthController {
       return response.internalServerError({ message: e.message });
     }
   }
+    /**
+   * @swagger
+   * /auth/me:
+   *   get:
+   *     summary: Récupérer les informations de l'utilisateur authentifié
+   *     tags:
+   *       - Auth
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Succès - Détails de l'utilisateur récupérés avec succès
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: integer
+   *                   example: 1
+   *                 email:
+   *                   type: string
+   *                   example: "user@example.com"
+   *                 username:
+   *                   type: string
+   *                   example: "Styve_Navaro"
+   *                 role:
+   *                   type: string
+   *                   example: "admin"
+   *       401:
+   *         description: Token invalide ou expiré
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: "Token invalide ou expiré"
+   *       500:
+   *         description: Erreur interne du serveur
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: "Erreur interne du serveur"
+   */
+  public async me({ auth, response }: HttpContext) {
+    try {
+      const user = await AuthService.getUser(auth)
+      return response.ok(user)
+    } catch (error) {
+      console.error('❌ Erreur lors de la récupération de l’utilisateur :', error)
+      return response.unauthorized({ message: 'Token invalide ou expiré' })
+    }
+  }
 }

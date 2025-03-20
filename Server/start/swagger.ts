@@ -12,6 +12,25 @@ const swaggerSpec = swaggerJsdoc({
       version: '1.0.0',
       description: 'Documentation API WFL avec Swagger',
     },
+    servers: [
+      {
+        url: 'http://localhost:3333', 
+        description: 'Serveur de développement',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],  
   },
   apis: ['./app/controllers/**/*.ts', './start/routes.ts'], // Chemin vers les contrôleurs
 })

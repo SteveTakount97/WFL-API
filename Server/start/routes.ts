@@ -50,19 +50,19 @@ router.post('/auth/logout', authController.logout)
 
 router.group(() => {
   // Utilisateurs
-  router.get('/admin/users', usersController.index)
-  router.get('/admin/users/:id', usersController.show)
-  router.put('/admin/users/:id', usersController.update) 
-  router.delete('/admin/users/:id', usersController.destroy)
+  router.get('/admin/users', usersController.index.bind(usersController))
+  router.get('/admin/users/:id', usersController.show.bind(usersController))
+  router.put('/admin/users/:id', usersController.update.bind(usersController)) 
+  router.delete('/admin/users/:id', usersController.destroy.bind(usersController))
  
 
 
   // Gestion des chiens
-  router.post('/admin/dogs', dogsController.store)  
-  router.get('/admin/dogs/:id', dogsController.show)
-  router.get('/admin/dogs', dogsController.index)
-  router.put('/admin/dogs/:id', dogsController.update)  
-  router.delete('/admin/dogs/:id', dogsController.destroy)
+  router.post('/admin/dogs', dogsController.store.bind(dogsController))  
+  router.get('/admin/dogs/:id', dogsController.show.bind(dogsController))
+  router.get('/admin/dogs', dogsController.index.bind(dogsController))
+  router.put('/admin/dogs/:id', dogsController.update.bind(dogsController))  
+  router.delete('/admin/dogs/:id', dogsController.destroy.bind(dogsController))
  
 
   // Gestion des familles de chiens
@@ -86,4 +86,6 @@ router.group(() => {
  router.get('/messages/:id', messagesController.show) 
  router.delete('/messages/:id', messagesController.destroy) 
 
+ //get data user authentify
+ router.get('auth/me', authController.me)
 }).prefix('/api').middleware([new AuthMiddleware().handle, new AdminMiddleware().handle])

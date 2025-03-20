@@ -2,14 +2,7 @@ import { HttpContext } from '@adonisjs/http-server/build/index.js'
 import type { NextFn } from '@adonisjs/core/types/http'
 import type { Authenticators } from '@adonisjs/auth/types'
 
-
-/**
- * Auth middleware is used to authenticate HTTP requests and deny
- * access to unauthenticated users.
- */
 export default class AuthMiddleware {
- 
-
   redirectTo = '/signup'
 
   public async handle(
@@ -21,20 +14,24 @@ export default class AuthMiddleware {
   ) {
     try {
       const guards = options.guards || ['api']
-      //Vérifie si l'utilisateur est authentifié
-      await ctx.auth.authenticateUsing(guards, { loginRoute: this.redirectTo })
-      console.log('🔑 Received token:', ctx.request.header('Authorization'))
+      
+      // Extraire le token du header Authorization
+      const authorizationHeader = ctx.request.header('Authorization')
+      console.log('🔎 Token reçu dans le header:', authorizationHeader)
+      if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
+        const token = authorizationHeader.split(' ')[1]
+        ctx.request.updateBody({ token }) // Mettre à jour le body avec le token
+      }
 
+      // Vérification du token avec le guard `api`
+      await ctx.auth.authenticateUsing(guards)
+      console.log('🔑 Token reçu et valide')
 
-      //Si l'utilisateur est authentifié, passe à la suite
+      //  Passe à la suite si authentifié
       await next()
     } catch (error) {
-
-      //Si échec → réponse 401 Unauthorized
-      ctx.response.status(401).send({
-        error: 'Unauthorized',
-        message: error.message,
-      })
+      console.error('❌ Authentification échouée :', error.message)
+      return ctx.response.unauthorized({ message: 'Token invalide ou expiré' })
     }
   }
 }

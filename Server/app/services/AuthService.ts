@@ -74,7 +74,21 @@ export default class AuthService {
       throw new Error(error.message || 'Failed to log out')
     }
   }
+  static async getUser(auth: any) {
+    await auth.use('api').authenticate()
+    const user = auth.user
 
+    if (!user) {
+      throw new Error('Utilisateur non trouvé')
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    }
+  }
   private static async regenerateSecureKey(user: any) {
     user.secureKey = string.random(12)
   }
