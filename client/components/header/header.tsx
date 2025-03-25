@@ -22,29 +22,20 @@ export default function Header() {
       <div className="absolute top-4 left-4">
         <Image src="/img/icon.png" alt="Icon" width={40} height={40} />
       </div>
-
-      {/* Trait vertical */}
       <div className="absolute top-0 left-[137px] h-full w-[2px] bg-[rgba(249,164,24,1)]" />
-
-      {/* Contenu à gauche */}
       <div className="flex flex-col justify-center pl-[137px] w-1/2">
         <div className="ml-[20px] mr-[20px] space-y-8">
-          {/* Texte principal */}
           <h1 className="text-5xl font-bold">
             Where Bounds <br/>Find Home.
           </h1>
           <p className="text-[rgba(255, 255, 255, 1)] text-lg">
           Embrace unconditional love, where bonds blossom and hearts connect. 
           </p>
-
-          {/* Bouton */}
           <button className="px-6 py-3 bg-[rgba(249,164,24,1)] text-white rounded-full hover:bg-orange-600 transition">
             Explore Dogs
           </button>
         </div>
       </div>
-
-      {/* Image Dog à droite */}
       <div className="absolute right-0 top-0 h-full w-1/2">
         <Image
           src="/img/dog-acceuil.jpeg"
@@ -53,11 +44,8 @@ export default function Header() {
           objectFit="cover"
         />
       </div>
-
-      {/* Carrousel en bas */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-[700px]">
         <div className="relative">
-          {/* Flèche gauche */}
           <button
             onClick={prevSlide}
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200"
@@ -65,7 +53,6 @@ export default function Header() {
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
 
-          {/* Images */}
           <div className="flex overflow-hidden rounded-lg">
             {images.map((img, index) => (
               <div
@@ -84,8 +71,6 @@ export default function Header() {
               </div>
             ))}
           </div>
-
-          {/* Flèche droite */}
           <button
             onClick={nextSlide}
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200"
