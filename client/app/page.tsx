@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Footer from "@/components/footer/Footer";
-import Header from "@/components/header/header";
-import SelectDog from "@/components/selectDog/SelectDog";
-import ViewDog from "@/components/VieuwDog/VieuwDog";
+import Header from "@/containers/header/header";
+import SelectDog from "@/containers/selectDog/SelectDog";
+import ViewDog from "@/containers/VieuwDog/VieuwDog";
+import ContainsDog from "@/containers/containsDog/containsDog";
 
 export default function Home() {
   return (
@@ -12,9 +13,10 @@ export default function Home() {
      <Header/>
      <SelectDog/>
      <ViewDog/>
+     <ContainsDog />
     </main>
   
-    {/* Footer en bas de page */}
+    {/* Footer*/}
     <Footer />
   </div>
   );
