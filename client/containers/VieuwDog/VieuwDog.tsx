@@ -29,7 +29,7 @@ export default function ViewDog() {
         </div>
       </div>
       <div className="flex justify-center gap-8 my-16 px-4">
-        {["/img/dog1.jpg", "/img/dog2.jpg", "/img/dog3.jpg"].map(
+        {["/img/SelectDog1.jpeg", "/img/SelectDog2.jpeg", "/img/SelectDog3.jpeg"].map(
           (src, index) => (
             <div key={index} className="w-full max-w-[350px] h-[350px] relative">
               <Image
@@ -37,7 +37,7 @@ export default function ViewDog() {
                 alt={`Dog ${index + 1}`}
                 width={350}
                 height={350}
-                className="object-cover rounded-lg"
+                className="object-cover rounded-lg h-[100%]"
               />
             </div>
           )

@@ -39,7 +39,7 @@ export default function GuideByConnection() {
             width={400}
             height={500}
             objectFit="cover"
-    className="object-cover rounded-lg shadow-lg custom-image-height"
+            className="object-cover rounded-lg shadow-lg custom-image-height"
           />
         </div>
       </div>
