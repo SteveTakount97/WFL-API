@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Footer = () => {
   return (
-    <footer className="bg-[rgba(31, 25, 27, 1)] text-white w-full max-w-[1440px] h-[368px] mx-auto px-6 flex flex-col justify-between">
+    <footer className="bg-[rgba(31, 25, 27, 1)] text-white w-full max-w-[1440px] min-h-[368px] mx-auto px-6 flex flex-col justify-between">
      
       <div className="w-full max-w-[1151px] h-full flex flex-col justify-between mx-auto py-8">
         <div className="flex justify-between items-start">
@@ -40,7 +40,8 @@ const Footer = () => {
             <h2 className="text-lg font-semibold ml-2">Company</h2>
           </div>
         </div>
-        <div className="w-full mt-8 pt-4 flex items-center justify-between text-sm">
+        
+        <div className="w-full mt-8 flex items-center justify-between text-sm">
 
           <div className="text-gray-400">
             <a href="/terms" className="hover:text-gray-200 transition mr-4">

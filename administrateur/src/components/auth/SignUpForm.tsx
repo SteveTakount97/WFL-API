@@ -7,7 +7,7 @@ import Checkbox from "../form/input/Checkbox";
 import { useUser } from "../../context/UserContext";
 
 export default function SignUpForm() {
-  const {setUser} = useUser()// Accès au contexte
+  const {setUser} = useUser() // Accès au contexte
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");

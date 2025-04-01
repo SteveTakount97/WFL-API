@@ -5,7 +5,7 @@ import { Phone, Mail } from "lucide-react";
 export default function SectionFooter() {
   return (
     <section className="w-full h-[611px] bg-white text-white py-12">
-      <div className="h-[400px] max-w-[1200px] w-full mx-auto flex items-center justify-between px-4 md:px-16 bg-black rounded-lg shadow-lg relative">
+      <div className="h-[400px] max-w-[1200px] w-full mx-auto flex items-center justify-between bg-black rounded-lg shadow-lg relative">
      
         <div className="w-1/2 flex flex-col justify-center">
           <h2 className="text-3xl font-bold mb-4">Stay Connected with Pur</h2>
@@ -23,7 +23,7 @@ export default function SectionFooter() {
               className="object-cover rounded-lg shadow-lg"
             />
           </div>
-          <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 p-4 rounded-lg shadow-lg flex justify-between items-start gap-8">
+          <div className="absolute bottom-4 left-0 -translate-x-4 bg-opacity-70 p-4 rounded-lg shadow-lg z-50 flex justify-between items-start gap-8 w-full w-[695px] rounded-[12px] backdrop-blur-[44px]">
             <div>
               <h3 className="text-lg font-bold text-white mb-2">Have any question</h3>
               <p className="text-sm text-gray-300">
