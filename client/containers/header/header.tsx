@@ -39,7 +39,7 @@ export default function Header() {
       <div className="absolute bottom-4 left-[188] w-[700px]">
         <div className="relative h-[283px] bg-[rgba(255, 255, 255, 0.15)] rounded-lg flex items-center justify-center p-4">
           <button className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200">
-            <ChevronLeft className="w-6 h-6 text-gray-800" />
+            <ChevronLeft className="w-6 h-6 text-orange-800" />
           </button>
           
           <div className="flex justify-center gap-4 h-[235px] w-full">
@@ -57,7 +57,7 @@ export default function Header() {
             )}
           </div>
           <button className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200">
-            <ChevronRight className="w-6 h-6 text-gray-800" />
+            <ChevronRight className="w-6 h-6 text-orange-800" />
           </button>
         </div>
       </div>
