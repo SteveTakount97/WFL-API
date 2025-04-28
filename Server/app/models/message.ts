@@ -16,7 +16,7 @@ export default class Message extends BaseModel {
   @column()
   declare content: string | null
 
-  @belongsTo(() => User)
+  @belongsTo(() => User, { foreignKey: 'senderId' })
   public sender!: relations.BelongsTo<typeof User>;
 
   @belongsTo(() => User, { foreignKey: 'receiverId' })

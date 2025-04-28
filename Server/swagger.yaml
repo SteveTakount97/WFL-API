@@ -1,0 +1,832 @@
+openapi: 3.0.0
+info:
+  title: API WFL
+  version: 1.0.0
+  description: Documentation API WFL avec Swagger
+paths:
+  /auth/register:
+    post:
+      summary: Enregistrer un nouvel utilisateur
+      tags:
+        - Auth
+      requestBody:
+        description: Les informations de l'utilisateur à enregistrer
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "201":
+          description: L'utilisateur a été enregistré avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      full_name:
+                        type: string
+                      role:
+                        type: string
+        "400":
+          description: Erreur lors de l'enregistrement de l'utilisateur
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /auth/login:
+    post:
+      summary: Authentifier un utilisateur
+      tags:
+        - Auth
+      requestBody:
+        description: Les informations de connexion de l'utilisateur
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: L'utilisateur a été authentifié avec succès et un jeton d'accès a
+            été généré
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      full_name:
+                        type: string
+                      role:
+                        type: string
+        "401":
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /auth/logout:
+    post:
+      summary: Déconnecter un utilisateur
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: L'utilisateur a été déconnecté avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /api/contacts:
+    post:
+      summary: Ajouter une demande de contact
+      tags:
+        - Contacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                message:
+                  type: string
+      responses:
+        "201":
+          description: Demande de contact créée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  contact:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      message:
+                        type: string
+        "400":
+          description: Erreur lors de la création du contact
+    get:
+      summary: Voir toutes les demandes de contact (avec pagination)
+      tags:
+        - Contacts
+      parameters:
+        - in: query
+          name: page
+          required: false
+          description: Numéro de page pour la pagination
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          required: false
+          description: Limite du nombre de contacts par page
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Liste des contacts récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  contacts:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      per_page:
+                        type: integer
+                      current_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            email:
+                              type: string
+                            message:
+                              type: string
+        "500":
+          description: Erreur lors de la récupération des contacts
+  "/api/contacts/{id}":
+    put:
+      summary: Met à jour une demande de contact
+      tags:
+        - Contacts
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la demande de contact à mettre à jour
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                message:
+                  type: string
+      responses:
+        "200":
+          description: Demande de contact mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  contact:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      message:
+                        type: string
+        "400":
+          description: Erreur lors de la mise à jour du contact
+        "404":
+          description: Contact non trouvé
+    delete:
+      summary: Supprimer une demande de contact
+      tags:
+        - Contacts
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la demande de contact à supprimer
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Contact supprimé avec succès
+        "404":
+          description: Contact non trouvé
+        "500":
+          description: Erreur interne du serveur
+  /api/dog-families:
+    get:
+      summary: Liste toutes les familles de chiens
+      tags:
+        - Dog Families
+      responses:
+        "200":
+          description: Liste des familles de chiens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+        "500":
+          description: Erreur interne du serveur
+    post:
+      summary: Crée une nouvelle famille de chiens
+      tags:
+        - Dog Families
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "201":
+          description: Famille de chiens créée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+        "400":
+          description: Erreur lors de la création de la famille
+  "/api/dog-families/{id}":
+    get:
+      summary: Affiche une famille de chiens spécifique
+      tags:
+        - Dog Families
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la famille de chiens
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Famille de chiens trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+        "404":
+          description: Famille non trouvée
+        "500":
+          description: Erreur interne du serveur
+    put:
+      summary: Met à jour une famille de chiens
+      tags:
+        - Dog Families
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la famille à mettre à jour
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Famille de chiens mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+        "400":
+          description: Erreur lors de la mise à jour de la famille
+        "404":
+          description: Famille non trouvée
+    delete:
+      summary: Supprime une famille de chiens
+      tags:
+        - Dog Families
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la famille à supprimer
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Famille supprimée avec succès
+        "404":
+          description: Famille non trouvée
+        "500":
+          description: Erreur interne du serveur
+  /api/dogs:
+    post:
+      summary: Ajouter un chien
+      tags:
+        - Dogs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nameDog:
+                  type: string
+                  description: Nom du chien
+                breed:
+                  type: string
+                  description: Race du chien
+                age:
+                  type: integer
+                  description: Âge du chien
+                birthday:
+                  type: string
+                  format: date
+                  description: Date de naissance du chien
+                gender:
+                  type: string
+                  description: Sexe du chien
+      responses:
+        "201":
+          description: Chien ajouté avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nameDog:
+                    type: string
+                  breed:
+                    type: string
+                  age:
+                    type: integer
+                  birthday:
+                    type: string
+                    format: date
+                  gender:
+                    type: string
+        "400":
+          description: Erreur lors de l'ajout du chien
+    get:
+      summary: Récupérer toutes les informations sur les chiens
+      tags:
+        - Dogs
+      responses:
+        "200":
+          description: Liste de tous les chiens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nameDog:
+                      type: string
+                    breed:
+                      type: string
+                    age:
+                      type: integer
+                    birthday:
+                      type: string
+                      format: date
+                    gender:
+                      type: string
+        "500":
+          description: Erreur interne du serveur
+  "/api/dogs/{id}":
+    put:
+      summary: Modifier un chien
+      tags:
+        - Dogs
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID du chien à modifier
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nameDog:
+                  type: string
+                breed:
+                  type: string
+                age:
+                  type: integer
+                birthday:
+                  type: string
+                  format: date
+                gender:
+                  type: string
+      responses:
+        "200":
+          description: Chien modifié avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nameDog:
+                    type: string
+                  breed:
+                    type: string
+                  age:
+                    type: integer
+                  birthday:
+                    type: string
+                    format: date
+                  gender:
+                    type: string
+        "400":
+          description: Erreur lors de la modification du chien
+        "404":
+          description: Chien non trouvé
+    delete:
+      summary: Supprimer un chien
+      tags:
+        - Dogs
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID du chien à supprimer
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Chien supprimé avec succès
+        "400":
+          description: Erreur lors de la suppression du chien
+    get:
+      summary: Récupérer les informations d'un chien par son ID
+      tags:
+        - Dogs
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID du chien
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Informations sur le chien
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nameDog:
+                    type: string
+                  breed:
+                    type: string
+                  age:
+                    type: integer
+                  birthday:
+                    type: string
+                    format: date
+                  gender:
+                    type: string
+        "404":
+          description: Chien introuvable
+  /api/messages:
+    post:
+      summary: Envoyer un message
+      tags:
+        - Messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                senderId:
+                  type: integer
+                receiverId:
+                  type: integer
+                content:
+                  type: string
+                  description: Le contenu du message
+                  maxLength: 1000
+                  minLength: 1
+      responses:
+        "201":
+          description: Message envoyé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      senderId:
+                        type: integer
+                      receiverId:
+                        type: integer
+                      content:
+                        type: string
+        "400":
+          description: Erreur lors de l'envoi du message
+  "/api/messages/{userId}":
+    get:
+      summary: Voir les messages reçus par un utilisateur (avec pagination)
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: ID de l'utilisateur dont on souhaite voir les messages reçus
+          schema:
+            type: integer
+        - in: query
+          name: page
+          required: false
+          description: Page de résultats pour la pagination
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          required: false
+          description: Nombre de messages par page
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Messages récupérés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      per_page:
+                        type: integer
+                      current_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            senderId:
+                              type: integer
+                            receiverId:
+                              type: integer
+                            content:
+                              type: string
+        "500":
+          description: Erreur lors de la récupération des messages
+  "/api/messages/{id}":
+    get:
+      summary: Voir un message spécifique
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID du message à consulter
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Message trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      senderId:
+                        type: integer
+                      receiverId:
+                        type: integer
+                      content:
+                        type: string
+        "404":
+          description: Message introuvable
+    delete:
+      summary: Supprimer un message
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID du message à supprimer
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Message supprimé avec succès
+        "404":
+          description: Message introuvable
+  /api/admin/users:
+    get:
+      summary: Récupère tous les utilisateurs
+      tags:
+        - Utilisateurs
+      responses:
+        "200":
+          description: Liste des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    username:
+                      type: string
+                    email:
+                      type: string
+                    created_at:
+                      type: string
+                      format: date-time
+        "500":
+          description: Erreur serveur
+  "/api/admin/users/{id}":
+    get:
+      summary: Récupère un utilisateur spécifique
+      tags:
+        - Utilisateurs
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de l'utilisateur à récupérer
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Détails de l'utilisateur
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+        "404":
+          description: Utilisateur non trouvé
+components: {}
+tags: []

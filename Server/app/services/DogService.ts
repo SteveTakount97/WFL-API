@@ -1,6 +1,5 @@
 import Dog from '#models/dog';
 import { DateTime } from 'luxon'
-import { BadRequestException } from '@adonisjs/core/build/standalone';
 import { Exception } from '@adonisjs/core/exceptions';
 
 export default class DogService {
@@ -18,20 +17,20 @@ export default class DogService {
 
     // Vérification des données
     if (!nameDog || nameDog.length < 3) {
-      throw new BadRequestException('Le nom du chien doit comporter au moins 3 caractères');
+      throw new Exception('Le nom du chien doit comporter au moins 3 caractères');
     }
 
     if (!breed || breed.length < 3) {
-      throw new BadRequestException('La race doit comporter au moins 3 caractères');
+      throw new Exception('La race doit comporter au moins 3 caractères');
     }
 
     if (!birthday || !DogService.validateAge(birthday)) {
-      throw new BadRequestException('La date de naissance n\'est pas valide');
+      throw new Exception('La date de naissance n\'est pas valide');
     }
     // Vérification de l'unicité du nom
     const existingDog = await Dog.findBy('nameDog', nameDog);
     if (existingDog) {
-      throw new BadRequestException('Un chien avec ce nom existe déjà');
+      throw new Exception('Un chien avec ce nom existe déjà');
     }
 
     // Création du chien
@@ -50,15 +49,15 @@ export default class DogService {
     const { nameDog, breed, birthday } = data;
 
     if (nameDog && nameDog.length < 3) {
-      throw new BadRequestException('Le nom du chien doit comporter au moins 3 caractères');
+      throw new Exception('Le nom du chien doit comporter au moins 3 caractères');
     }
 
     if (breed && breed.length < 3) {
-      throw new BadRequestException('La race doit comporter au moins 3 caractères');
+      throw new Exception('La race doit comporter au moins 3 caractères');
     }
 
     if (birthday && !DogService.validateAge(birthday)) {
-      throw new BadRequestException('La date de naissance n\'est pas valide');
+      throw new Exception('La date de naissance n\'est pas valide');
     }
     dog.merge(data);
     await dog.save();
@@ -69,7 +68,7 @@ export default class DogService {
   public async deleteDog(id: number): Promise<void> {
     const dog = await Dog.find(id);
     if (!dog) {
-      throw new BadRequestException('Chien non trouvé');
+      throw new Exception('Chien non trouvé');
     }
 
     // Supprimer le chien

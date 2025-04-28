@@ -10,6 +10,13 @@
 
 import router from '@adonisjs/core/services/router'
 import server from '@adonisjs/core/services/server'
+import setupSwagger from './swagger.js'
+
+
+export const serverMiddleware = [
+  setupSwagger,
+  // Autres middlewares si nécessaire
+]
 
 /**
  * The error handler is used to convert an exception
@@ -32,7 +39,7 @@ server.use([
  * The router middleware stack runs middleware on all the HTTP
  * requests with a registered route.
  */
-router.use([() => import('@adonisjs/core/bodyparser_middleware'), () => import('@adonisjs/auth/initialize_auth_middleware')])
+router.use([() => import('@adonisjs/core/bodyparser_middleware'), () => import('@adonisjs/auth/initialize_auth_middleware'), () => import('@adonisjs/session/session_middleware')])
 
 /**
  * Named middleware collection must be explicitly assigned to

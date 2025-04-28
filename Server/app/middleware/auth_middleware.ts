@@ -1,25 +1,37 @@
-import type { HttpContext } from '@adonisjs/core/http'
+import { HttpContext } from '@adonisjs/http-server/build/index.js'
 import type { NextFn } from '@adonisjs/core/types/http'
 import type { Authenticators } from '@adonisjs/auth/types'
 
-/**
- * Auth middleware is used authenticate HTTP requests and deny
- * access to unauthenticated users.
- */
 export default class AuthMiddleware {
-  /**
-   * The URL to redirect to, when authentication fails
-   */
-  redirectTo = '/login'
+  redirectTo = '/signup'
 
-  async handle(
+  public async handle(
     ctx: HttpContext,
     next: NextFn,
     options: {
       guards?: (keyof Authenticators)[]
     } = {}
   ) {
-    await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
-    return next()
+    try {
+      const guards = options.guards || ['api']
+      
+      // Extraire le token du header Authorization
+      const authorizationHeader = ctx.request.header('Authorization')
+      console.log('🔎 Token reçu dans le header:', authorizationHeader)
+      if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
+        const token = authorizationHeader.split(' ')[1]
+        ctx.request.updateBody({ token }) // Mettre à jour le body avec le token
+      }
+
+      // Vérification du token avec le guard `api`
+      await ctx.auth.authenticateUsing(guards)
+      console.log('🔑 Token reçu et valide')
+
+      //  Passe à la suite si authentifié
+      await next()
+    } catch (error) {
+      console.error('❌ Authentification échouée :', error.message)
+      return ctx.response.unauthorized({ message: 'Token invalide ou expiré' })
+    }
   }
 }

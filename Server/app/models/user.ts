@@ -15,25 +15,27 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 })
 
 export default class User extends compose(BaseModel, AuthFinder) {
+  
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  declare firstName: string | null
-
-  @column()
-  declare lasttName: string | null
+  declare full_name: string 
 
   @column()
   declare email: string
+
+  @column()
+  declare username: string
 
   @column({ serializeAs: null })
   declare password: string
 
   @column()
-  declare role: string
-
-
+  declare role: 'client' | 'admin'
+  
+  @column()
+  declare securekey: string
   //relations tables
   @hasMany(() => Dog)
   public dogs!: relations.HasMany<typeof Dog>;
@@ -50,5 +52,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
-  static accessTokens = DbAccessTokensProvider.forModel(User)
+  static accessTokens = DbAccessTokensProvider.forModel(User, {
+    expiresIn: '30 days',
+    prefix: 'oat_',
+    table: 'auth_access_tokens',
+    type: 'auth_token',
+    tokenSecretLength: 40,
+  })
 }
